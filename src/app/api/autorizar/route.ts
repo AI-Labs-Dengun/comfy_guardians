@@ -6,6 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const {
       childId,
+      approvalToken,
       guardianName,
       guardianEmail,
       guardianAddress,
@@ -63,6 +64,14 @@ export async function POST(request: NextRequest) {
     if (childProfile.guardian_email !== guardianEmail) {
       return NextResponse.json(
         { error: 'Email do responsável não corresponde ao registrado.' },
+        { status: 403 }
+      )
+    }
+
+    // Verificar se o token corresponde (se fornecido)
+    if (approvalToken && childProfile.approval_token !== approvalToken) {
+      return NextResponse.json(
+        { error: 'Token de autorização inválido.' },
         { status: 403 }
       )
     }
