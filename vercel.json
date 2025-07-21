@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "src/app/autorizar/[childId]/page.tsx": {
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/autorizar/(.*)",
+      "dest": "/autorizar/[childId]"
+    }
+  ]
+} 
