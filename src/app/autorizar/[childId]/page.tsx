@@ -19,6 +19,7 @@ export default function AutorizarCrianca() {
   const childId = params.childId as string
   
   const [childProfile, setChildProfile] = useState<Profile | null>(null)
+  const [approvalToken, setApprovalToken] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
     guardianName: '',
     guardianEmail: '',
@@ -66,12 +67,18 @@ export default function AutorizarCrianca() {
     loadChildProfile()
   }, [loadChildProfile])
 
-  // Pré-preencher email a partir da URL se disponível
+  // Pré-preencher email e token a partir da URL se disponível
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const email = urlParams.get('email')
+    const token = urlParams.get('token')
+    
     if (email) {
       setFormData(prev => ({ ...prev, guardianEmail: email }))
+    }
+    
+    if (token) {
+      setApprovalToken(token)
     }
   }, [])
 
@@ -132,6 +139,7 @@ export default function AutorizarCrianca() {
         },
         body: JSON.stringify({
           childId,
+          approvalToken,
           guardianName: formData.guardianName,
           guardianEmail: formData.guardianEmail,
           guardianAddress: formData.guardianAddress,
