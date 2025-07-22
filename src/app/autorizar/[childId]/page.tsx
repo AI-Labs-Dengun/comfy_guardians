@@ -18,6 +18,16 @@ export default function AutorizarCrianca() {
   const router = useRouter()
   const childId = params.childId as string
   
+  // Log para debug em produção
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('🔍 Debug - URL atual:', window.location.href)
+      console.log('🔍 Debug - Child ID:', childId)
+      console.log('🔍 Debug - Params:', params)
+      console.log('🔍 Debug - Search params:', window.location.search)
+    }
+  }, [childId, params])
+  
   const [childProfile, setChildProfile] = useState<Profile | null>(null)
   const [approvalToken, setApprovalToken] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
@@ -64,21 +74,30 @@ export default function AutorizarCrianca() {
 
   // Carregar informações da criança
   useEffect(() => {
-    loadChildProfile()
-  }, [loadChildProfile])
+    if (childId) {
+      loadChildProfile()
+    } else {
+      setError('ID da criança não fornecido na URL.')
+      setLoading(false)
+    }
+  }, [childId, loadChildProfile])
 
   // Pré-preencher email e token a partir da URL se disponível
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const email = urlParams.get('email')
-    const token = urlParams.get('token')
-    
-    if (email) {
-      setFormData(prev => ({ ...prev, guardianEmail: email }))
-    }
-    
-    if (token) {
-      setApprovalToken(token)
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const email = urlParams.get('email')
+      const token = urlParams.get('token')
+      
+      if (email) {
+        // Decodificar o email se estiver URL encoded
+        const decodedEmail = decodeURIComponent(email)
+        setFormData(prev => ({ ...prev, guardianEmail: decodedEmail }))
+      }
+      
+      if (token) {
+        setApprovalToken(token)
+      }
     }
   }, [])
 
@@ -168,10 +187,13 @@ export default function AutorizarCrianca() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="loading-spinner mx-auto"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando informações...</p>
+          <p className="mt-2 text-sm text-gray-500">
+            Validando token de autorização...
+          </p>
         </div>
       </div>
     )
