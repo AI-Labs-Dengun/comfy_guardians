@@ -266,7 +266,7 @@ export default function AutorizarCrianca() {
                 name="guardianName"
                 value={formData.guardianName}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                className="w-full border text-black border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                 required
               />
             </div>
@@ -281,7 +281,7 @@ export default function AutorizarCrianca() {
                 name="guardianEmail"
                 value={formData.guardianEmail}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                className="w-full border text-black border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                 required
               />
             </div>
@@ -296,7 +296,7 @@ export default function AutorizarCrianca() {
                 name="guardianAddress"
                 value={formData.guardianAddress}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                className="w-full border text-black border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                 placeholder="Rua, número, bairro, cidade"
                 required
               />
@@ -312,7 +312,7 @@ export default function AutorizarCrianca() {
                 name="guardianPostalCode"
                 value={formData.guardianPostalCode}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                className="w-full border text-black border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                 placeholder="0000-000"
                 required
               />
