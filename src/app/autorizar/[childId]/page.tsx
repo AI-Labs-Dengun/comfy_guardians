@@ -3,14 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { supabase, Profile } from '@/lib/supabase'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { Shield, User, Mail, MapPin, FileText, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface FormData {
@@ -160,10 +152,10 @@ export default function AutorizarCrianca() {
     }))
   }
 
-  const handleCheckboxChange = (field: 'termsOfUse' | 'gdprConsentDeclaration', checked: boolean | string) => {
+  const handleCheckboxChange = (field: 'termsOfUse' | 'gdprConsentDeclaration', checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      [field]: checked === true
+      [field]: checked
     }))
   }
 
@@ -245,258 +237,587 @@ export default function AutorizarCrianca() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <Card className="w-full max-w-md">
-          <CardContent className="flex flex-col items-center justify-center p-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">Carregando...</h2>
-            <p className="text-gray-600 text-center">Validando informações de autorização</p>
-          </CardContent>
-        </Card>
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '40px',
+          textAlign: 'center',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+          maxWidth: '400px',
+          width: '100%'
+        }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            border: '4px solid #f3f4f6',
+            borderTop: '4px solid #3b82f6',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 20px'
+          }}></div>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '10px' }}>
+            Carregando...
+          </h2>
+          <p style={{ color: '#6b7280' }}>Validando informações de autorização</p>
+        </div>
       </div>
     )
   }
 
   if (error && !childProfile) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-100">
-        <Card className="w-full max-w-md">
-          <CardContent className="flex flex-col items-center justify-center p-8">
-            <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Erro de Acesso</h1>
-            <p className="text-red-600 mb-6 text-center">{error}</p>
-            <Button onClick={() => router.push('/')} variant="destructive">
-              Voltar ao Início
-            </Button>
-          </CardContent>
-        </Card>
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '40px',
+          textAlign: 'center',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+          maxWidth: '400px',
+          width: '100%'
+        }}>
+          <AlertCircle size={64} color="#ef4444" style={{ margin: '0 auto 20px' }} />
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>
+            Erro de Acesso
+          </h1>
+          <p style={{ color: '#ef4444', marginBottom: '24px' }}>{error}</p>
+          <button
+            onClick={() => router.push('/')}
+            style={{
+              background: '#ef4444',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              width: '100%'
+            }}
+          >
+            Voltar ao Início
+          </button>
+        </div>
       </div>
     )
   }
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-100">
-        <Card className="w-full max-w-md">
-          <CardContent className="flex flex-col items-center justify-center p-8">
-            <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Autorização Concluída!</h1>
-            <p className="text-gray-600 mb-6 text-center">
-              A conta da criança foi autorizada com sucesso. O acesso será liberado em breve.
-            </p>
-            <Button onClick={() => router.push('/')} className="w-full">
-              Voltar ao Início
-            </Button>
-          </CardContent>
-        </Card>
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '40px',
+          textAlign: 'center',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+          maxWidth: '400px',
+          width: '100%'
+        }}>
+          <CheckCircle size={64} color="#10b981" style={{ margin: '0 auto 20px' }} />
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>
+            Autorização Concluída!
+          </h1>
+          <p style={{ color: '#6b7280', marginBottom: '24px' }}>
+            A conta da criança foi autorizada com sucesso. O acesso será liberado em breve.
+          </p>
+          <button
+            onClick={() => router.push('/')}
+            style={{
+              background: '#10b981',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              width: '100%'
+            }}
+          >
+            Voltar ao Início
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 lg:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: '20px',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
+    }}>
+      <div style={{
+        maxWidth: '800px',
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px'
+      }}>
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center space-x-2">
-            <Shield className="h-8 w-8 text-blue-600" />
-            <h1 className="text-4xl font-bold text-gray-900">
+        <div style={{
+          textAlign: 'center',
+          color: 'white',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            marginBottom: '16px'
+          }}>
+            <Shield size={32} color="white" />
+            <h1 style={{
+              fontSize: '36px',
+              fontWeight: 'bold',
+              margin: 0
+            }}>
               Autorização de Conta
             </h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p style={{
+            fontSize: '18px',
+            opacity: 0.9,
+            margin: 0
+          }}>
             Protegendo o futuro digital das crianças com segurança e responsabilidade
           </p>
         </div>
 
         {/* Informações da Criança */}
         {childProfile && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <User className="h-5 w-5" />
-                <span>Informações da Criança</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-600">Nome</Label>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="secondary" className="text-base px-3 py-1">
-                      {childProfile.name || 'Não informado'}
-                    </Badge>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-600">Username</Label>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="outline" className="text-base px-3 py-1">
-                      {childProfile.username}
-                    </Badge>
-                  </div>
+          <div style={{
+            background: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '16px'
+            }}>
+              <User size={20} color="#3b82f6" />
+              <h2 style={{
+                fontSize: '20px',
+                fontWeight: 'bold',
+                color: '#1f2937',
+                margin: 0
+              }}>
+                Informações da Criança
+              </h2>
+            </div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '16px'
+            }}>
+              <div>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 4px 0' }}>Nome</p>
+                <div style={{
+                  background: '#f3f4f6',
+                  color: '#1f2937',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontWeight: '600'
+                }}>
+                  {childProfile.name || 'Não informado'}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+              <div>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 4px 0' }}>Username</p>
+                <div style={{
+                  background: '#eff6ff',
+                  color: '#1d4ed8',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  border: '1px solid #dbeafe'
+                }}>
+                  {childProfile.username}
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Formulário Principal */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <FileText className="h-5 w-5" />
-              <span>Dados do Responsável Legal</span>
-            </CardTitle>
-            <CardDescription>
-              Preencha todos os campos obrigatórios para autorizar a criação da conta
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '32px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '8px'
+          }}>
+            <FileText size={20} color="#3b82f6" />
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#1f2937',
+              margin: 0
+            }}>
+              Dados do Responsável Legal
+            </h2>
+          </div>
+          <p style={{
+            color: '#6b7280',
+            marginBottom: '24px',
+            fontSize: '16px'
+          }}>
+            Preencha todos os campos obrigatórios para autorizar a criação da conta
+          </p>
 
+          {error && (
+            <div style={{
+              background: '#fef2f2',
+              border: '1px solid #fca5a5',
+              borderRadius: '8px',
+              padding: '16px',
+              marginBottom: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <AlertCircle size={20} color="#ef4444" />
+              <p style={{ color: '#dc2626', margin: 0, fontSize: '16px' }}>{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Nome do Responsável */}
-            <div className="space-y-2">
-              <Label htmlFor="guardianName" className="text-base">
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#1f2937',
+                marginBottom: '8px'
+              }}>
                 Nome Completo do Responsável *
-              </Label>
-              <Input
-                id="guardianName"
-                name="guardianName"
+              </label>
+              <input
                 type="text"
+                name="guardianName"
                 value={formData.guardianName}
                 onChange={handleInputChange}
                 placeholder="Digite o nome completo"
-                className="text-base"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  color: '#1f2937',
+                  background: 'white',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                required
               />
             </div>
 
             {/* Email do Responsável */}
-            <div className="space-y-2">
-              <Label htmlFor="guardianEmail" className="text-base">
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#1f2937',
+                marginBottom: '8px'
+              }}>
                 Email do Responsável *
-              </Label>
-              <Input
-                id="guardianEmail"
-                name="guardianEmail"
+              </label>
+              <input
                 type="email"
+                name="guardianEmail"
                 value={formData.guardianEmail}
                 onChange={handleInputChange}
                 placeholder="exemplo@email.com"
-                className="text-base"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  color: '#1f2937',
+                  background: 'white',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                required
               />
             </div>
 
             {/* Aviso de Segurança */}
-            <Alert>
-              <Shield className="h-4 w-4" />
-              <AlertDescription>
+            <div style={{
+              background: '#fef3c7',
+              border: '1px solid #fbbf24',
+              borderRadius: '8px',
+              padding: '16px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '8px'
+            }}>
+              <Shield size={20} color="#d97706" style={{ marginTop: '2px', flexShrink: 0 }} />
+              <p style={{
+                color: '#92400e',
+                margin: 0,
+                fontSize: '14px',
+                lineHeight: '1.5'
+              }}>
                 <strong>Informação de Segurança:</strong> Precisamos da sua morada por motivos de segurança. 
                 Esta só será partilhada com as autoridades ou profissionais competentes em situações de risco ou perigo iminente.
-              </AlertDescription>
-            </Alert>
+              </p>
+            </div>
 
             {/* Morada */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="guardianAddress" className="text-base">
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '16px'
+            }}>
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  color: '#1f2937',
+                  marginBottom: '8px'
+                }}>
                   Morada Completa *
-                </Label>
-                <Input
-                  id="guardianAddress"
-                  name="guardianAddress"
+                </label>
+                <input
                   type="text"
+                  name="guardianAddress"
                   value={formData.guardianAddress}
                   onChange={handleInputChange}
                   placeholder="Rua, número, bairro, cidade"
-                  className="text-base"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    color: '#1f2937',
+                    background: 'white',
+                    outline: 'none',
+                    transition: 'border-color 0.2s',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                  required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="guardianPostalCode" className="text-base">
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  color: '#1f2937',
+                  marginBottom: '8px'
+                }}>
                   Código Postal *
-                </Label>
-                <Input
-                  id="guardianPostalCode"
-                  name="guardianPostalCode"
+                </label>
+                <input
                   type="text"
+                  name="guardianPostalCode"
                   value={formData.guardianPostalCode}
                   onChange={handleInputChange}
                   placeholder="0000-000"
-                  className="text-base"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    color: '#1f2937',
+                    background: 'white',
+                    outline: 'none',
+                    transition: 'border-color 0.2s',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                  required
                 />
               </div>
             </div>
 
-            <Separator />
+            <div style={{ height: '1px', background: '#e5e7eb', margin: '16px 0' }}></div>
 
             {/* Checkboxes */}
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                                 <Checkbox
-                   id="termsOfUse"
-                   checked={formData.termsOfUse}
-                   onCheckedChange={(checked) => handleCheckboxChange('termsOfUse', checked)}
-                 />
-                <Label htmlFor="termsOfUse" className="text-sm leading-relaxed">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <input
+                  type="checkbox"
+                  id="termsOfUse"
+                  checked={formData.termsOfUse}
+                  onChange={(e) => handleCheckboxChange('termsOfUse', e.target.checked)}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    marginTop: '2px',
+                    accentColor: '#3b82f6'
+                  }}
+                />
+                <label htmlFor="termsOfUse" style={{
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  color: '#1f2937'
+                }}>
                   <strong>Aceito os termos de responsabilidade</strong> e confirmo que sou o responsável legal por esta criança, autorizando a criação da sua conta na plataforma.
-                </Label>
+                </label>
               </div>
 
-              <div className="flex items-start space-x-3">
-                                 <Checkbox
-                   id="gdprConsentDeclaration"
-                   checked={formData.gdprConsentDeclaration}
-                   onCheckedChange={(checked) => handleCheckboxChange('gdprConsentDeclaration', checked)}
-                 />
-                <Label htmlFor="gdprConsentDeclaration" className="text-sm leading-relaxed">
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <input
+                  type="checkbox"
+                  id="gdprConsentDeclaration"
+                  checked={formData.gdprConsentDeclaration}
+                  onChange={(e) => handleCheckboxChange('gdprConsentDeclaration', e.target.checked)}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    marginTop: '2px',
+                    accentColor: '#3b82f6'
+                  }}
+                />
+                <label htmlFor="gdprConsentDeclaration" style={{
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  color: '#1f2937'
+                }}>
                   <strong>Declaro consentimento RGPD</strong> com o tratamento de dados pessoais de acordo com o Regulamento Geral sobre a Proteção de Dados para os fins da criação e gestão da conta da criança.
-                </Label>
+                </label>
               </div>
             </div>
 
-            <p className="text-xs text-gray-500 text-center">
+            <p style={{
+              fontSize: '12px',
+              color: '#6b7280',
+              textAlign: 'center',
+              margin: '16px 0 0 0'
+            }}>
               * Todos os campos são obrigatórios
             </p>
-          </CardContent>
-        </Card>
+          </form>
+        </div>
 
         {/* Botão de Autorizar */}
-        <div className="flex justify-center">
-          <Button
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <button
             onClick={handleSubmit}
             disabled={submitting || !isFormComplete()}
-            size="lg"
-            className={`w-full max-w-md text-lg py-6 ${
-              isFormComplete() && !submitting
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+            style={{
+              width: '100%',
+              maxWidth: '500px',
+              padding: '16px 24px',
+              fontSize: '18px',
+              fontWeight: '700',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: isFormComplete() && !submitting ? 'pointer' : 'not-allowed',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              background: isFormComplete() && !submitting 
+                ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' 
+                : '#e5e7eb',
+              color: isFormComplete() && !submitting ? 'white' : '#9ca3af',
+              boxShadow: isFormComplete() && !submitting 
+                ? '0 8px 20px rgba(59, 130, 246, 0.3)' 
+                : 'none'
+            }}
+                         onMouseEnter={(e) => {
+               if (isFormComplete() && !submitting) {
+                 const target = e.target as HTMLButtonElement
+                 target.style.transform = 'translateY(-2px)'
+                 target.style.boxShadow = '0 12px 30px rgba(59, 130, 246, 0.4)'
+               }
+             }}
+             onMouseLeave={(e) => {
+               if (isFormComplete() && !submitting) {
+                 const target = e.target as HTMLButtonElement
+                 target.style.transform = 'translateY(0)'
+                 target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.3)'
+               }
+             }}
           >
             {submitting ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  border: '2px solid rgba(255,255,255,0.3)',
+                  borderTop: '2px solid white',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }}></div>
                 <span>Processando...</span>
-              </div>
+              </>
             ) : isFormComplete() ? (
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="h-5 w-5" />
+              <>
+                <CheckCircle size={20} />
                 <span>Autorizar Criação da Conta</span>
-              </div>
+              </>
             ) : (
-              <div className="flex items-center space-x-2">
-                <AlertCircle className="h-5 w-5" />
+              <>
+                <AlertCircle size={20} />
                 <span>Preencha todos os campos para continuar</span>
-              </div>
+              </>
             )}
-          </Button>
+          </button>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 } 
