@@ -25,6 +25,12 @@ export default function AutorizarCrianca() {
       console.log('🔍 Debug - Child ID:', childId)
       console.log('🔍 Debug - Params:', params)
       console.log('🔍 Debug - Search params:', window.location.search)
+      
+      // Validar formato do childId (UUID)
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      if (childId && !uuidRegex.test(childId)) {
+        console.warn('⚠️ Child ID não parece ser um UUID válido:', childId)
+      }
     }
   }, [childId, params])
   
@@ -45,18 +51,26 @@ export default function AutorizarCrianca() {
 
   const loadChildProfile = useCallback(async () => {
     try {
+      console.log('🔍 Carregando perfil da criança:', childId)
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', childId)
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Erro ao carregar perfil:', error)
+        throw error
+      }
 
       if (!data) {
+        console.warn('⚠️ Nenhum perfil encontrado para ID:', childId)
         setError('Criança não encontrada.')
         return
       }
+
+      console.log('✅ Perfil carregado:', { name: data.name, authorized: data.authorized })
 
       if (data.authorized === true) {
         setError('Esta criança já foi autorizada.')
@@ -65,8 +79,9 @@ export default function AutorizarCrianca() {
 
       setChildProfile(data)
     } catch (err) {
-      setError('Erro ao carregar informações da criança.')
-      console.error('Erro:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido'
+      console.error('❌ Erro ao carregar informações da criança:', errorMessage)
+      setError('Erro ao carregar informações da criança. Verifique se o link está correto.')
     } finally {
       setLoading(false)
     }
@@ -74,12 +89,23 @@ export default function AutorizarCrianca() {
 
   // Carregar informações da criança
   useEffect(() => {
-    if (childId) {
-      loadChildProfile()
-    } else {
+    if (!childId) {
+      console.error('❌ Child ID não fornecido')
       setError('ID da criança não fornecido na URL.')
       setLoading(false)
+      return
     }
+
+    // Validar formato UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(childId)) {
+      console.error('❌ Child ID com formato inválido:', childId)
+      setError('Formato do ID da criança é inválido.')
+      setLoading(false)
+      return
+    }
+
+    loadChildProfile()
   }, [childId, loadChildProfile])
 
   // Pré-preencher email e token a partir da URL se disponível
@@ -89,13 +115,17 @@ export default function AutorizarCrianca() {
       const email = urlParams.get('email')
       const token = urlParams.get('token')
       
+      console.log('🔍 Parâmetros da URL:', { email, token })
+      
       if (email) {
         // Decodificar o email se estiver URL encoded
         const decodedEmail = decodeURIComponent(email)
+        console.log('📧 Email extraído da URL:', decodedEmail)
         setFormData(prev => ({ ...prev, guardianEmail: decodedEmail }))
       }
       
       if (token) {
+        console.log('🔑 Token extraído da URL:', token)
         setApprovalToken(token)
       }
     }
