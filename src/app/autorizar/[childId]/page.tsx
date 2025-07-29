@@ -287,179 +287,179 @@ export default function AutorizarCrianca() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Autorização de Conta
-            </h1>
-            <p className="text-lg text-gray-600">
-              Protegendo o futuro digital das crianças
-            </p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Autorização de Conta
+          </h1>
+          <p className="text-lg text-gray-600">
+            Protegendo o futuro digital das crianças
+          </p>
+        </div>
 
-          {/* Informações da Criança */}
-          {childProfile && (
-            <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Informações da Criança</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Nome</p>
-                  <p className="text-lg font-medium text-gray-800">{childProfile.name || 'Não informado'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Username</p>
-                  <p className="text-lg font-medium text-gray-800">{childProfile.username}</p>
-                </div>
+        {/* Informações da Criança */}
+        {childProfile && (
+          <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Informações da Criança</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Nome</p>
+                <p className="text-lg font-medium text-gray-800">{childProfile.name || 'Não informado'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Username</p>
+                <p className="text-lg font-medium text-gray-800">{childProfile.username}</p>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Formulário */}
-          <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-red-600">{error}</p>
-                </div>
-              )}
+        {/* Formulário */}
+        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-red-600">{error}</p>
+              </div>
+            )}
 
-              {/* Nome do Responsável */}
+            {/* Nome do Responsável */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nome Completo do Responsável *
+              </label>
+              <input
+                type="text"
+                name="guardianName"
+                value={formData.guardianName}
+                onChange={handleInputChange}
+                placeholder="Digite o nome completo"
+                className="w-full px-4 py-3 border text-black !text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                style={{ color: 'black' }}
+                required
+              />
+            </div>
+
+            {/* Email do Responsável */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email do Responsável *
+              </label>
+              <input
+                type="email"
+                name="guardianEmail"
+                value={formData.guardianEmail}
+                onChange={handleInputChange}
+                placeholder="exemplo@email.com"
+                className="w-full px-4 py-3 border !text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                style={{ color: 'black' }}
+                required
+              />
+            </div>
+
+            {/* Aviso de Segurança */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <p className="text-sm text-amber-800">
+                <strong>Informação de Segurança:</strong> Precisamos da sua morada por motivos de segurança. 
+                Esta só será partilhada com as autoridades ou profissionais competentes em situações de risco ou perigo iminente.
+              </p>
+            </div>
+
+            {/* Morada */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nome Completo do Responsável *
+                  Morada Completa *
                 </label>
                 <input
                   type="text"
-                  name="guardianName"
-                  value={formData.guardianName}
+                  name="guardianAddress"
+                  value={formData.guardianAddress}
                   onChange={handleInputChange}
-                  placeholder="Digite o nome completo"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  placeholder="Rua, número, bairro, cidade"
+                  className="w-full px-4 py-3 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   required
                 />
               </div>
-
-              {/* Email do Responsável */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email do Responsável *
+                  Código Postal *
                 </label>
                 <input
-                  type="email"
-                  name="guardianEmail"
-                  value={formData.guardianEmail}
+                  type="text"
+                  name="guardianPostalCode"
+                  value={formData.guardianPostalCode}
                   onChange={handleInputChange}
-                  placeholder="exemplo@email.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  placeholder="0000-000"
+                  className="w-full px-4 py-3 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   required
                 />
               </div>
+            </div>
 
-              {/* Aviso de Segurança */}
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="text-sm text-amber-800">
-                  <strong>Informação de Segurança:</strong> Precisamos da sua morada por motivos de segurança. 
-                  Esta só será partilhada com as autoridades ou profissionais competentes em situações de risco ou perigo iminente.
-                </p>
+            {/* Checkboxes */}
+            <div className="space-y-4">
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="termsOfUse"
+                  name="termsOfUse"
+                  checked={formData.termsOfUse}
+                  onChange={handleInputChange}
+                  className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  required
+                />
+                <label htmlFor="termsOfUse" className="ml-3 text-sm text-gray-700">
+                  <strong>Aceito os termos de responsabilidade</strong> e confirmo que sou o responsável legal por esta criança, autorizando a criação da sua conta na plataforma.
+                </label>
               </div>
 
-              {/* Endereço */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Morada Completa *
-                  </label>
-                  <input
-                    type="text"
-                    name="guardianAddress"
-                    value={formData.guardianAddress}
-                    onChange={handleInputChange}
-                    placeholder="Rua, número, bairro, cidade"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Código Postal *
-                  </label>
-                  <input
-                    type="text"
-                    name="guardianPostalCode"
-                    value={formData.guardianPostalCode}
-                    onChange={handleInputChange}
-                    placeholder="0000-000"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    required
-                  />
-                </div>
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="gdprConsentDeclaration"
+                  name="gdprConsentDeclaration"
+                  checked={formData.gdprConsentDeclaration}
+                  onChange={handleInputChange}
+                  className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  required
+                />
+                <label htmlFor="gdprConsentDeclaration" className="ml-3 text-sm text-gray-700">
+                  <strong>Declaro consentimento RGPD</strong> com o tratamento de dados pessoais de acordo com o Regulamento Geral sobre a Proteção de Dados para os fins da criação e gestão da conta da criança.
+                </label>
               </div>
+            </div>
 
-              {/* Checkboxes */}
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <input
-                    type="checkbox"
-                    id="termsOfUse"
-                    name="termsOfUse"
-                    checked={formData.termsOfUse}
-                    onChange={handleInputChange}
-                    className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    required
-                  />
-                  <label htmlFor="termsOfUse" className="ml-3 text-sm text-gray-700">
-                    <strong>Aceito os termos de responsabilidade</strong> e confirmo que sou o responsável legal por esta criança, autorizando a criação da sua conta na plataforma.
-                  </label>
-                </div>
+            <p className="text-xs text-gray-500 text-center">
+              * Todos os campos são obrigatórios
+            </p>
+          </form>
+        </div>
 
-                <div className="flex items-start">
-                  <input
-                    type="checkbox"
-                    id="gdprConsentDeclaration"
-                    name="gdprConsentDeclaration"
-                    checked={formData.gdprConsentDeclaration}
-                    onChange={handleInputChange}
-                    className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    required
-                  />
-                  <label htmlFor="gdprConsentDeclaration" className="ml-3 text-sm text-gray-700">
-                    <strong>Declaro consentimento RGPD</strong> com o tratamento de dados pessoais de acordo com o Regulamento Geral sobre a Proteção de Dados para os fins da criação e gestão da conta da criança.
-                  </label>
-                </div>
+        {/* Botão de Autorizar - Sempre visível, fora do form */}
+        <div className="mt-8">
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || !isFormComplete()}
+            className={`w-full py-4 px-6 rounded-lg font-medium text-lg transition-colors ${
+              isFormComplete() && !submitting
+                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            {submitting ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Processando...
               </div>
-
-              {/* Botão */}
-              <div className="pt-6">
-                <button
-                  type="submit"
-                  disabled={submitting || !isFormComplete()}
-                  className={`w-full py-4 px-6 rounded-lg font-medium text-lg transition-colors ${
-                    isFormComplete() && !submitting
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  {submitting ? (
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Processando...
-                    </div>
-                  ) : isFormComplete() ? (
-                    'Autorizar Criação da Conta'
-                  ) : (
-                    'Preencha todos os campos para continuar'
-                  )}
-                </button>
-              </div>
-
-              <p className="text-xs text-gray-500 text-center">
-                * Todos os campos são obrigatórios
-              </p>
-            </form>
-          </div>
+            ) : isFormComplete() ? (
+              'Autorizar Criação da Conta'
+            ) : (
+              'Preencha todos os campos para continuar'
+            )}
+          </button>
         </div>
       </div>
     </div>
