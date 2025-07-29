@@ -3,6 +3,15 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { supabase, Profile } from '@/lib/supabase'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Shield, User, Mail, MapPin, FileText, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface FormData {
   guardianName: string
@@ -48,7 +57,6 @@ export default function AutorizarCrianca() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const [focusedField, setFocusedField] = useState<string | null>(null)
 
   // Função para verificar se o formulário está completo
   const isFormComplete = (): boolean => {
@@ -145,19 +153,18 @@ export default function AutorizarCrianca() {
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
+    const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }))
   }
 
-  const handleInputFocus = (fieldName: string) => {
-    setFocusedField(fieldName)
-  }
-
-  const handleInputBlur = () => {
-    setFocusedField(null)
+  const handleCheckboxChange = (field: 'termsOfUse' | 'gdprConsentDeclaration', checked: boolean | string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: checked === true
+    }))
   }
 
   const validateForm = (): string | null => {
@@ -238,12 +245,14 @@ export default function AutorizarCrianca() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto mb-6"></div>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">Carregando...</h2>
-          <p className="text-gray-600">Validando informações de autorização</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex flex-col items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">Carregando...</h2>
+            <p className="text-gray-600 text-center">Validando informações de autorização</p>
+          </CardContent>
+        </Card>
       </div>
     )
   }
@@ -251,17 +260,16 @@ export default function AutorizarCrianca() {
   if (error && !childProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-100">
-        <div className="text-center max-w-md mx-auto p-8">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Erro de Acesso</h1>
-          <p className="text-red-600 mb-6">{error}</p>
-          <button
-            onClick={() => router.push('/')}
-            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Voltar ao Início
-          </button>
-        </div>
+        <Card className="w-full max-w-md">
+          <CardContent className="flex flex-col items-center justify-center p-8">
+            <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Erro de Acesso</h1>
+            <p className="text-red-600 mb-6 text-center">{error}</p>
+            <Button onClick={() => router.push('/')} variant="destructive">
+              Voltar ao Início
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
@@ -269,197 +277,224 @@ export default function AutorizarCrianca() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-100">
-        <div className="text-center max-w-md mx-auto p-8">
-          <div className="text-green-500 text-8xl mb-6">✓</div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">Autorização Concluída!</h1>
-          <p className="text-gray-600 mb-8">
-            A conta da criança foi autorizada com sucesso. O acesso será liberado em breve.
-          </p>
-          <button
-            onClick={() => router.push('/')}
-            className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 transition-colors font-medium"
-          >
-            Voltar ao Início
-          </button>
-        </div>
+        <Card className="w-full max-w-md">
+          <CardContent className="flex flex-col items-center justify-center p-8">
+            <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Autorização Concluída!</h1>
+            <p className="text-gray-600 mb-6 text-center">
+              A conta da criança foi autorizada com sucesso. O acesso será liberado em breve.
+            </p>
+            <Button onClick={() => router.push('/')} className="w-full">
+              Voltar ao Início
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 lg:p-8">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Autorização de Conta
-          </h1>
-          <p className="text-lg text-gray-600">
-            Protegendo o futuro digital das crianças
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center space-x-2">
+            <Shield className="h-8 w-8 text-blue-600" />
+            <h1 className="text-4xl font-bold text-gray-900">
+              Autorização de Conta
+            </h1>
+          </div>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Protegendo o futuro digital das crianças com segurança e responsabilidade
           </p>
         </div>
 
         {/* Informações da Criança */}
         {childProfile && (
-          <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Informações da Criança</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Nome</p>
-                <p className="text-lg font-medium text-gray-800">{childProfile.name || 'Não informado'}</p>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <User className="h-5 w-5" />
+                <span>Informações da Criança</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-600">Nome</Label>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary" className="text-base px-3 py-1">
+                      {childProfile.name || 'Não informado'}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-600">Username</Label>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="outline" className="text-base px-3 py-1">
+                      {childProfile.username}
+                    </Badge>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Username</p>
-                <p className="text-lg font-medium text-gray-800">{childProfile.username}</p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         )}
 
-        {/* Formulário */}
-        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Formulário Principal */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <FileText className="h-5 w-5" />
+              <span>Dados do Responsável Legal</span>
+            </CardTitle>
+            <CardDescription>
+              Preencha todos os campos obrigatórios para autorizar a criação da conta
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-red-600">{error}</p>
-              </div>
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
 
             {/* Nome do Responsável */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-2">
+              <Label htmlFor="guardianName" className="text-base">
                 Nome Completo do Responsável *
-              </label>
-              <input
-                type="text"
+              </Label>
+              <Input
+                id="guardianName"
                 name="guardianName"
+                type="text"
                 value={formData.guardianName}
                 onChange={handleInputChange}
                 placeholder="Digite o nome completo"
-                className="w-full px-4 py-3 border text-black !text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                style={{ color: 'black' }}
-                required
+                className="text-base"
               />
             </div>
 
             {/* Email do Responsável */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-2">
+              <Label htmlFor="guardianEmail" className="text-base">
                 Email do Responsável *
-              </label>
-              <input
-                type="email"
+              </Label>
+              <Input
+                id="guardianEmail"
                 name="guardianEmail"
+                type="email"
                 value={formData.guardianEmail}
                 onChange={handleInputChange}
                 placeholder="exemplo@email.com"
-                className="w-full px-4 py-3 border !text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                style={{ color: 'black' }}
-                required
+                className="text-base"
               />
             </div>
 
             {/* Aviso de Segurança */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <p className="text-sm text-amber-800">
+            <Alert>
+              <Shield className="h-4 w-4" />
+              <AlertDescription>
                 <strong>Informação de Segurança:</strong> Precisamos da sua morada por motivos de segurança. 
                 Esta só será partilhada com as autoridades ou profissionais competentes em situações de risco ou perigo iminente.
-              </p>
-            </div>
+              </AlertDescription>
+            </Alert>
 
             {/* Morada */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="space-y-2">
+                <Label htmlFor="guardianAddress" className="text-base">
                   Morada Completa *
-                </label>
-                <input
-                  type="text"
+                </Label>
+                <Input
+                  id="guardianAddress"
                   name="guardianAddress"
+                  type="text"
                   value={formData.guardianAddress}
                   onChange={handleInputChange}
                   placeholder="Rua, número, bairro, cidade"
-                  className="w-full px-4 py-3 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  required
+                  className="text-base"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="space-y-2">
+                <Label htmlFor="guardianPostalCode" className="text-base">
                   Código Postal *
-                </label>
-                <input
-                  type="text"
+                </Label>
+                <Input
+                  id="guardianPostalCode"
                   name="guardianPostalCode"
+                  type="text"
                   value={formData.guardianPostalCode}
                   onChange={handleInputChange}
                   placeholder="0000-000"
-                  className="w-full px-4 py-3 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  required
+                  className="text-base"
                 />
               </div>
             </div>
 
+            <Separator />
+
             {/* Checkboxes */}
             <div className="space-y-4">
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="termsOfUse"
-                  name="termsOfUse"
-                  checked={formData.termsOfUse}
-                  onChange={handleInputChange}
-                  className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  required
-                />
-                <label htmlFor="termsOfUse" className="ml-3 text-sm text-gray-700">
+              <div className="flex items-start space-x-3">
+                                 <Checkbox
+                   id="termsOfUse"
+                   checked={formData.termsOfUse}
+                   onCheckedChange={(checked) => handleCheckboxChange('termsOfUse', checked)}
+                 />
+                <Label htmlFor="termsOfUse" className="text-sm leading-relaxed">
                   <strong>Aceito os termos de responsabilidade</strong> e confirmo que sou o responsável legal por esta criança, autorizando a criação da sua conta na plataforma.
-                </label>
+                </Label>
               </div>
 
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="gdprConsentDeclaration"
-                  name="gdprConsentDeclaration"
-                  checked={formData.gdprConsentDeclaration}
-                  onChange={handleInputChange}
-                  className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  required
-                />
-                <label htmlFor="gdprConsentDeclaration" className="ml-3 text-sm text-gray-700">
+              <div className="flex items-start space-x-3">
+                                 <Checkbox
+                   id="gdprConsentDeclaration"
+                   checked={formData.gdprConsentDeclaration}
+                   onCheckedChange={(checked) => handleCheckboxChange('gdprConsentDeclaration', checked)}
+                 />
+                <Label htmlFor="gdprConsentDeclaration" className="text-sm leading-relaxed">
                   <strong>Declaro consentimento RGPD</strong> com o tratamento de dados pessoais de acordo com o Regulamento Geral sobre a Proteção de Dados para os fins da criação e gestão da conta da criança.
-                </label>
+                </Label>
               </div>
             </div>
 
             <p className="text-xs text-gray-500 text-center">
               * Todos os campos são obrigatórios
             </p>
-          </form>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Botão de Autorizar - Sempre visível, fora do form */}
-        <div className="mt-8">
-          <button
+        {/* Botão de Autorizar */}
+        <div className="flex justify-center">
+          <Button
             onClick={handleSubmit}
             disabled={submitting || !isFormComplete()}
-            className={`w-full py-4 px-6 rounded-lg font-medium text-lg transition-colors ${
+            size="lg"
+            className={`w-full max-w-md text-lg py-6 ${
               isFormComplete() && !submitting
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                ? 'bg-blue-600 hover:bg-blue-700'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
             {submitting ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Processando...
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <span>Processando...</span>
               </div>
             ) : isFormComplete() ? (
-              'Autorizar Criação da Conta'
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-5 w-5" />
+                <span>Autorizar Criação da Conta</span>
+              </div>
             ) : (
-              'Preencha todos os campos para continuar'
+              <div className="flex items-center space-x-2">
+                <AlertCircle className="h-5 w-5" />
+                <span>Preencha todos os campos para continuar</span>
+              </div>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
