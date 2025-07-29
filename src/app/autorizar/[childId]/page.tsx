@@ -368,7 +368,7 @@ export default function AutorizarCrianca() {
       </div>
       
       <div className="relative z-10 w-full max-w-2xl mx-auto">
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/50 transform hover:scale-[1.02] transition-all duration-500">
+        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/50 transition-all duration-500">
           
           {/* Header com gradiente */}
           <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 p-8 text-center relative overflow-hidden">
@@ -390,7 +390,7 @@ export default function AutorizarCrianca() {
 
           <div className="p-8">
             {childProfile && (
-              <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border border-blue-200/50 rounded-2xl p-6 mb-8 transform hover:scale-[1.02] transition-all duration-300 shadow-lg">
+              <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border border-blue-200/50 rounded-2xl p-6 mb-10 transform transition-all duration-300 shadow-lg">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-4">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -412,7 +412,7 @@ export default function AutorizarCrianca() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
               {error && (
                 <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 rounded-2xl p-6 animate-shake">
                   <div className="flex items-center">
@@ -426,226 +426,251 @@ export default function AutorizarCrianca() {
                 </div>
               )}
 
-              {/* Grid de campos */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* Nome do Responsável */}
-                <div className="md:col-span-2 space-y-3">
-                  <label className="text-sm font-bold text-gray-700 block flex items-center">
-                    <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {/* Seção de Informações Pessoais */}
+              <div className="space-y-8">
+                <div className="border-b border-gray-200 pb-4">
+                  <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg className="w-6 h-6 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Nome Completo do Responsável *
-                  </label>
-                  <div className={`relative group`}>
-                    <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
-                      focusedField === 'guardianName' 
-                        ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
-                        : 'border-gray-200 hover:border-purple-300'
-                    }`}>
-                      <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
-                        focusedField === 'guardianName' ? 'text-purple-500' : 'text-gray-400'
-                      }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    Informações do Responsável
+                  </h3>
+                  
+                  {/* Nome do Responsável */}
+                  <div className="space-y-3 mb-8">
+                    <label className="text-sm font-bold text-gray-700 block flex items-center">
+                      <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
-                      <input
-                        type="text"
-                        name="guardianName"
-                        value={formData.guardianName}
-                        onChange={handleInputChange}
-                        onFocus={() => handleInputFocus('guardianName')}
-                        onBlur={handleInputBlur}
-                        placeholder="Digite o nome completo"
-                        className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium text-lg"
-                        required
-                      />
+                      Nome Completo do Responsável *
+                    </label>
+                    <div className={`relative group`}>
+                      <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
+                        focusedField === 'guardianName' 
+                          ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
+                          : 'border-gray-200 hover:border-purple-300'
+                      }`}>
+                        <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
+                          focusedField === 'guardianName' ? 'text-purple-500' : 'text-gray-400'
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <input
+                          type="text"
+                          name="guardianName"
+                          value={formData.guardianName}
+                          onChange={handleInputChange}
+                          onFocus={() => handleInputFocus('guardianName')}
+                          onBlur={handleInputBlur}
+                          placeholder="Digite o nome completo"
+                          className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium text-lg"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Email do Responsável */}
-                <div className="md:col-span-2 space-y-3">
-                  <label className="text-sm font-bold text-gray-700 block flex items-center">
-                    <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    Email do Responsável *
-                  </label>
-                  <div className="relative group">
-                    <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
-                      focusedField === 'guardianEmail' 
-                        ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
-                        : 'border-gray-200 hover:border-purple-300'
-                    }`}>
-                      <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
-                        focusedField === 'guardianEmail' ? 'text-purple-500' : 'text-gray-400'
-                      }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {/* Email do Responsável */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-bold text-gray-700 block flex items-center">
+                      <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
-                      <input
-                        type="email"
-                        name="guardianEmail"
-                        value={formData.guardianEmail}
-                        onChange={handleInputChange}
-                        onFocus={() => handleInputFocus('guardianEmail')}
-                        onBlur={handleInputBlur}
-                        placeholder="exemplo@email.com"
-                        className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium text-lg"
-                        required
-                      />
+                      Email do Responsável *
+                    </label>
+                    <div className="relative group">
+                      <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
+                        focusedField === 'guardianEmail' 
+                          ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
+                          : 'border-gray-200 hover:border-purple-300'
+                      }`}>
+                        <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
+                          focusedField === 'guardianEmail' ? 'text-purple-500' : 'text-gray-400'
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <input
+                          type="email"
+                          name="guardianEmail"
+                          value={formData.guardianEmail}
+                          onChange={handleInputChange}
+                          onFocus={() => handleInputFocus('guardianEmail')}
+                          onBlur={handleInputBlur}
+                          placeholder="exemplo@email.com"
+                          className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium text-lg"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Aviso de Segurança */}
-                <div className="md:col-span-2">
-                  <div className="bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border border-amber-200/50 rounded-2xl p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L2.732 14.5c-.77.833-.192 2.5 1.732 2.5z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-amber-800 mb-2">🔒 Informação de Segurança</p>
-                        <p className="text-sm text-amber-700 leading-relaxed">
-                          Precisamos da sua morada por motivos de segurança. Esta só será partilhada com as autoridades ou profissionais competentes em situações de risco ou perigo iminente.
-                        </p>
-                      </div>
+                <div className="bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border border-amber-200/50 rounded-2xl p-6 shadow-sm">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L2.732 14.5c-.77.833-.192 2.5 1.732 2.5z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-amber-800 mb-2">🔒 Informação de Segurança</p>
+                      <p className="text-sm text-amber-700 leading-relaxed">
+                        Precisamos da sua morada por motivos de segurança. Esta só será partilhada com as autoridades ou profissionais competentes em situações de risco ou perigo iminente.
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Morada */}
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-gray-700 block flex items-center">
-                    <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {/* Seção de Endereço */}
+                <div className="border-b border-gray-200 pb-4">
+                  <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg className="w-6 h-6 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    Morada Completa *
-                  </label>
-                  <div className="relative group">
-                    <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
-                      focusedField === 'guardianAddress' 
-                        ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
-                        : 'border-gray-200 hover:border-purple-300'
-                    }`}>
-                      <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
-                        focusedField === 'guardianAddress' ? 'text-purple-500' : 'text-gray-400'
-                      }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                      </svg>
-                      <input
-                        type="text"
-                        name="guardianAddress"
-                        value={formData.guardianAddress}
-                        onChange={handleInputChange}
-                        onFocus={() => handleInputFocus('guardianAddress')}
-                        onBlur={handleInputBlur}
-                        placeholder="Rua, número, bairro, cidade"
-                        className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium"
-                        required
-                      />
+                    Informações de Endereço
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Morada */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-bold text-gray-700 block flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Morada Completa *
+                      </label>
+                      <div className="relative group">
+                        <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
+                          focusedField === 'guardianAddress' 
+                            ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
+                            : 'border-gray-200 hover:border-purple-300'
+                        }`}>
+                          <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
+                            focusedField === 'guardianAddress' ? 'text-purple-500' : 'text-gray-400'
+                          }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                          </svg>
+                          <input
+                            type="text"
+                            name="guardianAddress"
+                            value={formData.guardianAddress}
+                            onChange={handleInputChange}
+                            onFocus={() => handleInputFocus('guardianAddress')}
+                            onBlur={handleInputBlur}
+                            placeholder="Rua, número, bairro, cidade"
+                            className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Código Postal */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-bold text-gray-700 block flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Código Postal *
+                      </label>
+                      <div className="relative group">
+                        <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
+                          focusedField === 'guardianPostalCode' 
+                            ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
+                            : 'border-gray-200 hover:border-purple-300'
+                        }`}>
+                          <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
+                            focusedField === 'guardianPostalCode' ? 'text-purple-500' : 'text-gray-400'
+                          }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <input
+                            type="text"
+                            name="guardianPostalCode"
+                            value={formData.guardianPostalCode}
+                            onChange={handleInputChange}
+                            onFocus={() => handleInputFocus('guardianPostalCode')}
+                            onBlur={handleInputBlur}
+                            placeholder="0000-000"
+                            className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium"
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Código Postal */}
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-gray-700 block flex items-center">
-                    <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                {/* Checkboxes melhorados */}
+                <div className="space-y-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg className="w-6 h-6 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    Código Postal *
-                  </label>
-                  <div className="relative group">
-                    <div className={`flex items-center border-2 rounded-2xl bg-white px-5 py-4 transition-all duration-300 shadow-sm group-hover:shadow-md ${
-                      focusedField === 'guardianPostalCode' 
-                        ? 'border-purple-500 ring-4 ring-purple-100 shadow-lg' 
-                        : 'border-gray-200 hover:border-purple-300'
-                    }`}>
-                      <svg className={`w-5 h-5 mr-3 transition-colors duration-200 ${
-                        focusedField === 'guardianPostalCode' ? 'text-purple-500' : 'text-gray-400'
-                      }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <input
-                        type="text"
-                        name="guardianPostalCode"
-                        value={formData.guardianPostalCode}
-                        onChange={handleInputChange}
-                        onFocus={() => handleInputFocus('guardianPostalCode')}
-                        onBlur={handleInputBlur}
-                        placeholder="0000-000"
-                        className="flex-1 text-gray-800 placeholder-gray-400 focus:outline-none font-medium"
-                        required
-                      />
+                    Termos e Condições
+                  </h3>
+                  
+                  <div className="bg-gradient-to-br from-gray-50 to-slate-50 rounded-2xl p-6 space-y-6 border border-gray-100">
+                    <div className="group">
+                      <label className="flex items-start space-x-4 cursor-pointer group-hover:bg-white/50 p-4 rounded-xl transition-all duration-200">
+                        <div className="relative mt-1">
+                          <input
+                            type="checkbox"
+                            id="termsOfUse"
+                            name="termsOfUse"
+                            checked={formData.termsOfUse}
+                            onChange={handleInputChange}
+                            className="w-6 h-6 text-purple-600 bg-white border-2 border-gray-300 rounded-lg focus:ring-purple-500 focus:ring-2 cursor-pointer transition-all duration-200"
+                            required
+                          />
+                          {formData.termsOfUse && (
+                            <svg className="absolute inset-0 w-6 h-6 text-purple-600 pointer-events-none" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-800 font-medium leading-relaxed">
+                            <strong className="text-gray-900">Aceito os termos de responsabilidade</strong> e confirmo que sou o responsável legal por esta criança, autorizando a criação da sua conta na plataforma.
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+
+                    <div className="group">
+                      <label className="flex items-start space-x-4 cursor-pointer group-hover:bg-white/50 p-4 rounded-xl transition-all duration-200">
+                        <div className="relative mt-1">
+                          <input
+                            type="checkbox"
+                            id="gdprConsentDeclaration"
+                            name="gdprConsentDeclaration"
+                            checked={formData.gdprConsentDeclaration}
+                            onChange={handleInputChange}
+                            className="w-6 h-6 text-purple-600 bg-white border-2 border-gray-300 rounded-lg focus:ring-purple-500 focus:ring-2 cursor-pointer transition-all duration-200"
+                            required
+                          />
+                          {formData.gdprConsentDeclaration && (
+                            <svg className="absolute inset-0 w-6 h-6 text-purple-600 pointer-events-none" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-800 font-medium leading-relaxed">
+                            <strong className="text-gray-900">Declaro consentimento RGPD</strong> com o tratamento de dados pessoais de acordo com o Regulamento Geral sobre a Proteção de Dados para os fins da criação e gestão da conta da criança.
+                          </p>
+                        </div>
+                      </label>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Checkboxes melhorados */}
-              <div className="space-y-6 pt-6">
-                <div className="bg-gradient-to-br from-gray-50 to-slate-50 rounded-2xl p-6 space-y-6 border border-gray-100">
-                  <div className="group">
-                    <label className="flex items-start space-x-4 cursor-pointer group-hover:bg-white/50 p-4 rounded-xl transition-all duration-200">
-                      <div className="relative mt-1">
-                        <input
-                          type="checkbox"
-                          id="termsOfUse"
-                          name="termsOfUse"
-                          checked={formData.termsOfUse}
-                          onChange={handleInputChange}
-                          className="w-6 h-6 text-purple-600 bg-white border-2 border-gray-300 rounded-lg focus:ring-purple-500 focus:ring-2 cursor-pointer transition-all duration-200"
-                          required
-                        />
-                        {formData.termsOfUse && (
-                          <svg className="absolute inset-0 w-6 h-6 text-purple-600 pointer-events-none" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-gray-800 font-medium leading-relaxed">
-                          <strong className="text-gray-900">Aceito os termos de responsabilidade</strong> e confirmo que sou o responsável legal por esta criança, autorizando a criação da sua conta na plataforma.
-                        </p>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div className="group">
-                    <label className="flex items-start space-x-4 cursor-pointer group-hover:bg-white/50 p-4 rounded-xl transition-all duration-200">
-                      <div className="relative mt-1">
-                        <input
-                          type="checkbox"
-                          id="gdprConsentDeclaration"
-                          name="gdprConsentDeclaration"
-                          checked={formData.gdprConsentDeclaration}
-                          onChange={handleInputChange}
-                          className="w-6 h-6 text-purple-600 bg-white border-2 border-gray-300 rounded-lg focus:ring-purple-500 focus:ring-2 cursor-pointer transition-all duration-200"
-                          required
-                        />
-                        {formData.gdprConsentDeclaration && (
-                          <svg className="absolute inset-0 w-6 h-6 text-purple-600 pointer-events-none" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-gray-800 font-medium leading-relaxed">
-                          <strong className="text-gray-900">Declaro consentimento RGPD</strong> com o tratamento de dados pessoais de acordo com o Regulamento Geral sobre a Proteção de Dados para os fins da criação e gestão da conta da criança.
-                        </p>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Botão de Autorizar Premium */}
-              <div className="pt-8">
+              {/* Botão de Autorizar - Sempre visível */}
+              <div className="pt-8 border-t border-gray-200">
                 <button
                   type="submit"
                   disabled={submitting || !isFormComplete()}
