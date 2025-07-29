@@ -4,14 +4,6 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   serverExternalPackages: ['@supabase/supabase-js'],
   trailingSlash: false,
-  async rewrites() {
-    return [
-      {
-        source: '/autorizar/:childId',
-        destination: '/autorizar/:childId',
-      },
-    ]
-  },
   async headers() {
     return [
       {
