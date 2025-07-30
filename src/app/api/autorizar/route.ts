@@ -103,24 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('🔍 Verificando se já existe responsável para este email:', guardianEmail)
-    // Verificar se já existe um registro de responsável para este email
-    const { data: existingGuardian, error: existingError } = await supabase
-      .from('children_guardians')
-      .select('id')
-      .eq('guardian_email', guardianEmail)
-      .single()
-
-    if (existingError && existingError.code !== 'PGRST116') {
-      console.error('❌ Erro ao verificar responsável existente:', existingError)
-    }
-
-    if (existingGuardian) {
-      console.log('❌ Já existe responsável para este email')
-      return NextResponse.json(
-        { error: 'Já existe um registro para este responsável.' },
-        { status: 409 }
-      )
-    }
+    // A verificação de responsável existente será feita pela função save_guardian_data
 
     console.log('🔧 Chamando função authorize_account...')
     // Usar a função nativa do Supabase para autorizar a conta
@@ -150,108 +133,53 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Conta autorizada com sucesso, salvando dados do responsável...')
 
-    // Dados para inserção na tabela children_guardians
-    const guardianData = {
-      child_name: childProfile.name,
-      child_birth_date: new Date().toISOString().split('T')[0], // Data atual como fallback
-      guardian_name: guardianName,
-      guardian_email: guardianEmail,
-      guardian_address: guardianAddress,
-      guardian_postal_code: guardianPostalCode,
-      terms_of_use: termsOfUse,
-      gdpr_consent_declaration: gdprConsentDeclaration,
-      account_creation_authorization_date: new Date().toISOString()
-    }
+    // Salvar dados do responsável usando a função RPC
+    console.log('🔧 Salvando dados do responsável via função RPC...')
+    const { data: guardianResult, error: guardianError } = await supabase
+      .rpc('save_guardian_data', {
+        p_child_name: childProfile.name,
+        p_guardian_name: guardianName,
+        p_guardian_email: guardianEmail,
+        p_guardian_address: guardianAddress,
+        p_guardian_postal_code: guardianPostalCode,
+        p_terms_of_use: termsOfUse,
+        p_gdpr_consent: gdprConsentDeclaration
+      })
 
-    console.log('📝 Dados do responsável para inserção:', JSON.stringify(guardianData, null, 2))
-
-    // Verificar se a tabela children_guardians existe e tem a estrutura correta
-    console.log('🔍 Verificando estrutura da tabela children_guardians...')
-    try {
-      const { data: tableInfo, error: tableError } = await supabase
-        .from('children_guardians')
-        .select('*')
-        .limit(1)
-
-      if (tableError) {
-        console.error('❌ Erro ao verificar tabela children_guardians:', tableError)
-        console.warn('⚠️ Pulando inserção na tabela children_guardians - tabela não acessível')
-      } else {
-        console.log('✅ Tabela children_guardians acessível')
-      }
-    } catch (tableCheckException) {
-      console.error('❌ Exceção ao verificar tabela:', tableCheckException)
-      console.warn('⚠️ Pulando inserção na tabela children_guardians - erro na verificação')
-    }
-
-    // Tentar inserir dados do responsável na tabela children_guardians
-    let insertResult = null
-    let guardianError = null
-
-    try {
-      console.log('🔧 Tentando inserção na tabela children_guardians...')
-      const { data, error } = await supabase
-        .from('children_guardians')
-        .insert(guardianData)
-        .select()
-
-      insertResult = data
-      guardianError = error
-      
-      if (guardianError) {
-        console.error('❌ Erro na inserção:', guardianError)
-        console.error('❌ Código do erro:', guardianError.code)
-        console.error('❌ Mensagem do erro:', guardianError.message)
-        console.error('❌ Detalhes do erro:', guardianError.details)
-        console.error('❌ Dica do erro:', guardianError.hint)
-      } else {
-        console.log('✅ Inserção bem-sucedida:', insertResult)
-      }
-    } catch (insertException) {
-      console.error('❌ Exceção ao inserir dados do responsável:', insertException)
-      guardianError = {
-        code: 'INSERT_EXCEPTION',
-        message: insertException instanceof Error ? insertException.message : 'Erro desconhecido na inserção',
-        details: null,
-        hint: null
-      }
-    }
-
-    // Por enquanto, não vamos falhar se a inserção na tabela children_guardians falhar
-    // A autorização principal já foi feita com sucesso
     if (guardianError) {
+      console.error('❌ Erro ao salvar dados do responsável:', guardianError)
       console.warn('⚠️ Aviso: Não foi possível salvar dados adicionais do responsável, mas a autorização foi processada com sucesso')
-      console.warn('⚠️ Dados que não foram salvos:', guardianData)
       
-      // Tentar uma abordagem alternativa usando RPC
-      console.log('🔧 Tentando abordagem alternativa via RPC...')
+      // Tentar inserção direta como fallback
+      console.log('🔧 Tentando inserção direta como fallback...')
       try {
-        const { data: rpcResult, error: rpcError } = await supabase
-          .rpc('save_guardian_data', {
-            p_child_name: childProfile.name,
-            p_guardian_name: guardianName,
-            p_guardian_email: guardianEmail,
-            p_guardian_address: guardianAddress,
-            p_guardian_postal_code: guardianPostalCode,
-            p_terms_of_use: termsOfUse,
-            p_gdpr_consent: gdprConsentDeclaration
-          })
-        
-        if (rpcError) {
-          console.error('❌ Erro na função RPC:', rpcError)
-          console.warn('⚠️ Função RPC também falhou, mas a autorização principal foi bem-sucedida')
-        } else {
-          console.log('✅ Dados salvos via RPC:', rpcResult)
+        const guardianData = {
+          child_name: childProfile.name,
+          guardian_name: guardianName,
+          guardian_email: guardianEmail,
+          guardian_address: guardianAddress,
+          guardian_postal_code: guardianPostalCode,
+          terms_of_use: termsOfUse,
+          gdpr_consent_declaration: gdprConsentDeclaration
         }
-      } catch (rpcException) {
-        console.error('❌ Exceção na função RPC:', rpcException)
-        console.warn('⚠️ Função RPC falhou, mas a autorização principal foi bem-sucedida')
+
+        const { data: insertResult, error: insertError } = await supabase
+          .from('children_guardians')
+          .insert(guardianData)
+          .select()
+
+        if (insertError) {
+          console.error('❌ Erro na inserção direta:', insertError)
+          console.warn('⚠️ Inserção direta também falhou, mas a autorização principal foi bem-sucedida')
+        } else {
+          console.log('✅ Dados salvos via inserção direta:', insertResult)
+        }
+      } catch (insertException) {
+        console.error('❌ Exceção na inserção direta:', insertException)
+        console.warn('⚠️ Inserção direta falhou, mas a autorização principal foi bem-sucedida')
       }
-      
-      // Retornar sucesso mesmo com erro na inserção da tabela children_guardians
-      // pois a autorização principal foi bem-sucedida
     } else {
-      console.log('✅ Dados do responsável salvos com sucesso:', insertResult)
+      console.log('✅ Dados do responsável salvos com sucesso:', guardianResult)
     }
 
     return NextResponse.json(
