@@ -1,183 +1,210 @@
-# Comfy Guardians - Sistema de Autorização
+# Comfy Guardians - Authorization System
 
-Sistema web para autorização de contas de crianças através de formulário para responsáveis, integrado com o schema existente do Supabase.
+Web system for authorizing children's accounts through a form for guardians, integrated with the existing Supabase schema.
 
-## Configuração Inicial
+## Initial Setup
 
-### 1. Instalar Dependências
+### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Configurar Variáveis de Ambiente
-Copie o arquivo de exemplo e configure suas credenciais do Supabase:
+### 2. Configure Environment Variables
+Copy the example file and configure your Supabase credentials:
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Edite o arquivo `.env.local` e adicione suas credenciais do Supabase:
+Edit the `.env.local` file and add your Supabase credentials:
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anonima-aqui
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
-### 3. Schema do Banco de Dados
-O sistema utiliza o schema existente do Supabase definido em `docs/schema_supabase.sql`. As principais tabelas são:
+### 3. Database Schema
+The system uses the existing Supabase schema defined in `docs/schema_supabase.sql`. The main tables are:
 
-#### Tabela `profiles` (já existente)
-- `id` - UUID (referência para auth.users)
-- `name` - Nome da criança
-- `username` - Username único
-- `guardian_email` - Email do responsável
-- `authorized` - Status de autorização (NULL = pendente, TRUE = autorizado, FALSE = rejeitado)
-- `approval_token` - Token único para autorização
-- `user_role` - Role do usuário ('app', 'cms', 'psicologos')
+#### `profiles` Table (existing)
+- `id` - UUID (reference to auth.users)
+- `name` - Child's name
+- `username` - Unique username
+- `guardian_email` - Guardian's email
+- `authorized` - Authorization status (NULL = pending, TRUE = authorized, FALSE = rejected)
+- `approval_token` - Unique token for authorization
+- `user_role` - User role ('app', 'cms', 'psicologos')
 
-#### Tabela `children_guardians` (já existente)
-- `child_name` - Nome da criança
-- `child_birth_date` - Data de nascimento
-- `guardian_name` - Nome do responsável
-- `guardian_email` - Email do responsável (único)
-- `guardian_address` - Endereço do responsável
-- `guardian_postal_code` - Código postal
-- `terms_of_use` - Aceitação dos termos de uso
-- `gdpr_consent_declaration` - Consentimento RGPD
+#### `children_guardians` Table (existing)
+- `child_name` - Child's name
+- `child_birth_date` - Birth date
+- `guardian_name` - Guardian's name
+- `guardian_email` - Guardian's email (unique)
+- `guardian_address` - Guardian's address
+- `guardian_postal_code` - Postal code
+- `terms_of_use` - Terms of use acceptance
+- `gdpr_consent_declaration` - GDPR consent
 
-### 4. Executar em Desenvolvimento
+### 4. Run in Development
 ```bash
 npm run dev
 ```
 
-### 5. Build para Produção
+### 5. Build for Production
 ```bash
 npm run build
 npm start
 ```
 
-## Como Funciona
+## How It Works
 
-### Fluxo de Autorização
+### Authorization Flow
 
-1. **Aplicação Flutter** cria perfil da criança na tabela `profiles` com `authorized = NULL`
-2. **Sistema** envia email para o responsável com link contendo `approval_token`
-3. **Responsável** acessa: `/autorizar/[childId]?email=responsavel@email.com`
-4. **Formulário** é preenchido com dados do responsável
-5. **API** chama função `authorize_account()` do Supabase
-6. **Sistema** salva dados na tabela `children_guardians`
+1. **Flutter Application** creates child profile in `profiles` table with `authorized = NULL`
+2. **System** sends email to guardian with link containing `approval_token`
+3. **Guardian** accesses: `/autorizar/[childId]?email=guardian@email.com`
+4. **Form** is filled with guardian's data
+5. **API** calls Supabase's `authorize_account()` function
+6. **System** saves data in `children_guardians` table
 
-### URL de Autorização
+### Authorization URL
 ```
-http://localhost:3000/autorizar/[ID_DA_CRIANCA]?email=[EMAIL_RESPONSAVEL]
-```
-
-### Exemplo
-```
-http://localhost:3000/autorizar/123e4567-e89b-12d3-a456-426614174000?email=responsavel@email.com
+http://localhost:3000/autorizar/[CHILD_ID]?email=[GUARDIAN_EMAIL]
 ```
 
-## Funcionalidades Implementadas
+### Example
+```
+http://localhost:3000/autorizar/123e4567-e89b-12d3-a456-426614174000?email=guardian@email.com
+```
 
-✅ **Integração com Schema Existente**
-- Usa tabela `profiles` existente
-- Usa tabela `children_guardians` existente
-- Utiliza função `authorize_account()` nativa
+## Implemented Features
 
-✅ **Validações de Segurança**
-- Verificação de email do responsável
-- Validação de `approval_token`
-- Prevenção de autorizações duplicadas
-- Logs de auditoria automáticos
+✅ **Existing Schema Integration**
+- Uses existing `profiles` table
+- Uses existing `children_guardians` table
+- Utilizes native `authorize_account()` function
 
-✅ **Formulário Completo**
-- Nome do responsável
-- Email (preenchido automaticamente)
-- Morada completa
-- Código postal
-- Termos de uso
-- Consentimento RGPD
+✅ **Security Validations**
+- Guardian email verification
+- `approval_token` validation
+- Prevention of duplicate authorizations
+- Automatic audit logs
 
-✅ **Interface Moderna**
-- Design responsivo
-- Feedback visual
-- Validação em tempo real
-- Estados de carregamento
+✅ **Complete Form**
+- Guardian's name
+- Email (auto-filled)
+- Complete address
+- Postal code
+- Terms of use
+- GDPR consent
 
-## Estrutura do Projeto
+✅ **Modern Interface**
+- Responsive design
+- Visual feedback
+- Real-time validation
+- Loading states
 
-- `/src/app/autorizar/[childId]/page.tsx` - Página do formulário
-- `/src/app/api/autorizar/route.ts` - API de autorização
-- `/src/lib/supabase.ts` - Configuração e tipos
-- `/docs/schema_supabase.sql` - Schema do banco de dados
+✅ **Guardian System**
+- `children_guardians` table for data storage
+- `save_guardian_data()` function for validation
+- Duplication prevention by email
+- Complete audit with timestamps
 
-## Integração com Flutter
+## Project Structure
 
-### Criação de Perfil da Criança
+- `/src/app/autorizar/[childId]/page.tsx` - Form page
+- `/src/app/api/autorizar/route.ts` - Authorization API
+- `/src/lib/supabase.ts` - Configuration and types
+- `/docs/schema_supabase.sql` - Database schema
+
+## Flutter Integration
+
+### Creating Child Profile
 ```sql
 INSERT INTO profiles (
   id, name, username, avatar_path, guardian_email, 
   authorized, user_role, approval_token
 ) VALUES (
-  'uuid-da-crianca', 'Nome da Criança', 'username', '/avatar.jpg',
-  'responsavel@email.com', NULL, 'app', gen_random_uuid()
+  'child-uuid', 'Child Name', 'username', '/avatar.jpg',
+  'guardian@email.com', NULL, 'app', gen_random_uuid()
 );
 ```
 
-### Monitoramento de Status
+### Status Monitoring
 ```sql
-SELECT authorized FROM profiles WHERE id = 'uuid-da-crianca';
+SELECT authorized FROM profiles WHERE id = 'child-uuid';
 ```
 
-### Envio de Email
-O sistema Flutter deve enviar email com link contendo:
-- ID da criança
-- Email do responsável
-- `approval_token` para validação
+### Email Sending
+The Flutter system should send email with link containing:
+- Child ID
+- Guardian's email
+- `approval_token` for validation
 
-## Segurança
+## Security
 
-### Validações Implementadas
-1. **Email do Responsável** - Deve corresponder ao registrado
-2. **Token de Aprovação** - Validação via função nativa
-3. **Status de Autorização** - Apenas contas pendentes
-4. **Duplicação** - Prevenção de registros duplicados
-5. **Auditoria** - Logs automáticos de todas as ações
+### Implemented Validations
+1. **Guardian Email** - Must match registered email
+2. **Approval Token** - Validation via native function
+3. **Authorization Status** - Only pending accounts
+4. **Duplication** - Prevention of duplicate records
+5. **Audit** - Automatic logs of all actions
 
-### Políticas de Segurança (RLS)
-- Acesso controlado por email do responsável
-- Funções com `SECURITY DEFINER`
-- Validação de tokens únicos
+### Security Policies (RLS)
+- Access controlled by guardian's email
+- Functions with `SECURITY DEFINER`
+- Unique token validation
 
 ## API Endpoints
 
 ### POST `/api/autorizar`
-Processa a autorização usando a função nativa do Supabase.
+Processes authorization using Supabase's native function.
 
 **Body:**
 ```json
 {
-  "childId": "uuid-da-crianca",
-  "guardianName": "Nome do Responsável",
-  "guardianEmail": "responsavel@email.com",
-  "guardianAddress": "Endereço completo",
+  "childId": "child-uuid",
+  "guardianName": "Guardian Name",
+  "guardianEmail": "guardian@email.com",
+  "guardianAddress": "Complete address",
   "guardianPostalCode": "0000-000",
   "termsOfUse": true,
   "gdprConsentDeclaration": true
 }
 ```
 
-**Respostas:**
-- `200`: Autorização processada com sucesso
-- `400`: Dados inválidos
-- `403`: Email não corresponde
-- `404`: Criança não encontrada
-- `409`: Já autorizado ou responsável duplicado
-- `500`: Erro interno
+**Responses:**
+- `200`: Authorization processed successfully
+- `400`: Invalid data
+- `403`: Email doesn't match
+- `404`: Child not found
+- `409`: Already authorized or duplicate guardian
+- `500`: Internal error
 
-## Suporte
+## Testing
 
-Para problemas e dúvidas, verifique:
-1. Configuração das variáveis de ambiente
-2. Schema do banco de dados em `docs/schema_supabase.sql`
-3. Logs de erro no console
-4. Políticas de segurança (RLS) no Supabase
+### Test Guardian System
+Run the test script in Supabase SQL Editor:
+```sql
+-- See file: md/test_children_guardians.sql
+```
+
+### Verify Functionality
+1. Execute the updated schema in `md/schema_supabase.sql`
+2. Test the `save_guardian_data()` function with sample data
+3. Verify that the `children_guardians` table was created
+4. Test the authorization form with valid data
+
+## Documentation
+
+- `md/CHILDREN_GUARDIANS.md` - Complete guardian system documentation
+- `md/test_children_guardians.sql` - Test scripts
+- `md/schema_supabase.sql` - Complete database schema
+
+## Support
+
+For issues and questions, check:
+1. Environment variables configuration
+2. Database schema in `md/schema_supabase.sql`
+3. Error logs in console
+4. Security policies (RLS) in Supabase
+5. Documentation in `md/CHILDREN_GUARDIANS.md`
