@@ -237,36 +237,13 @@ export default function AutorizarCrianca() {
 
   if (loading) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px'
-      }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '40px',
-          textAlign: 'center',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-          maxWidth: '400px',
-          width: '100%'
-        }}>
-          <div style={{
-            width: '60px',
-            height: '60px',
-            border: '4px solid #f3f4f6',
-            borderTop: '4px solid #3b82f6',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 20px'
-          }}></div>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '10px' }}>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 flex items-center justify-center p-5">
+        <div className="bg-white rounded-2xl p-10 text-center shadow-2xl max-w-md w-full">
+          <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-5"></div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2.5">
             Carregando...
           </h2>
-          <p style={{ color: '#6b7280' }}>Validando informações de autorização</p>
+          <p className="text-gray-500">Validando informações de autorização</p>
         </div>
       </div>
     )
@@ -274,41 +251,16 @@ export default function AutorizarCrianca() {
 
   if (error && !childProfile) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px'
-      }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '40px',
-          textAlign: 'center',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-          maxWidth: '400px',
-          width: '100%'
-        }}>
-          <AlertCircle size={64} color="#ef4444" style={{ margin: '0 auto 20px' }} />
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>
+      <div className="min-h-screen bg-gradient-to-br from-red-100 to-red-300 flex items-center justify-center p-5">
+        <div className="bg-white rounded-2xl p-10 text-center shadow-2xl max-w-md w-full">
+          <AlertCircle size={64} className="text-red-500 mx-auto mb-5" />
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
             Erro de Acesso
           </h1>
-          <p style={{ color: '#ef4444', marginBottom: '24px' }}>{error}</p>
+          <p className="text-red-500 mb-6">{error}</p>
           <button
             onClick={() => router.push('/')}
-            style={{
-              background: '#ef4444',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              width: '100%'
-            }}
+            className="bg-red-500 text-white py-3 px-6 rounded-lg border-none text-base font-semibold cursor-pointer w-full hover:bg-red-600 transition-colors"
           >
             Voltar ao Início
           </button>
@@ -319,43 +271,18 @@ export default function AutorizarCrianca() {
 
   if (success) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px'
-      }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '40px',
-          textAlign: 'center',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-          maxWidth: '400px',
-          width: '100%'
-        }}>
-          <CheckCircle size={64} color="#10b981" style={{ margin: '0 auto 20px' }} />
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>
+      <div className="min-h-screen bg-gradient-to-br from-green-100 to-green-300 flex items-center justify-center p-5">
+        <div className="bg-white rounded-2xl p-10 text-center shadow-2xl max-w-md w-full">
+          <CheckCircle size={64} className="text-green-500 mx-auto mb-5" />
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
             Autorização Concluída!
           </h1>
-          <p style={{ color: '#6b7280', marginBottom: '24px' }}>
+          <p className="text-gray-500 mb-6">
             A conta da criança foi autorizada com sucesso. O acesso será liberado em breve.
           </p>
           <button
             onClick={() => router.push('/')}
-            style={{
-              background: '#10b981',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              width: '100%'
-            }}
+            className="bg-green-500 text-white py-3 px-6 rounded-lg border-none text-base font-semibold cursor-pointer w-full hover:bg-green-600 transition-colors"
           >
             Voltar ao Início
           </button>
@@ -365,103 +292,40 @@ export default function AutorizarCrianca() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '20px',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      <div style={{
-        maxWidth: '800px',
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '24px'
-      }}>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 p-5 font-sans">
+      <div className="max-w-4xl mx-auto flex flex-col gap-6">
         {/* Header */}
-        <div style={{
-          textAlign: 'center',
-          color: 'white',
-          marginBottom: '20px'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            marginBottom: '16px'
-          }}>
-            <Shield size={32} color="white" />
-            <h1 style={{
-              fontSize: '36px',
-              fontWeight: 'bold',
-              margin: 0
-            }}>
+        <div className="text-center text-white mb-5">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Shield size={32} className="text-white" />
+            <h1 className="text-4xl font-bold m-0">
               Autorização de Conta
             </h1>
           </div>
-          <p style={{
-            fontSize: '18px',
-            opacity: 0.9,
-            margin: 0
-          }}>
+          <p className="text-lg opacity-90 m-0">
             Protegendo o futuro digital das crianças com segurança e responsabilidade
           </p>
         </div>
 
         {/* Informações da Criança */}
         {childProfile && (
-          <div style={{
-            background: 'white',
-            borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '16px'
-            }}>
-              <User size={20} color="#3b82f6" />
-              <h2 style={{
-                fontSize: '20px',
-                fontWeight: 'bold',
-                color: '#1f2937',
-                margin: 0
-              }}>
+          <div className="bg-white rounded-2xl p-6 shadow-xl">
+            <div className="flex items-center gap-2 mb-4">
+              <User size={20} className="text-blue-500" />
+              <h2 className="text-xl font-bold text-gray-800 m-0">
                 Informações da Criança
               </h2>
             </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '16px'
-            }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 4px 0' }}>Nome</p>
-                <div style={{
-                  background: '#f3f4f6',
-                  color: '#1f2937',
-                  padding: '8px 12px',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: '600'
-                }}>
+                <p className="text-sm text-gray-500 mb-1">Nome</p>
+                <div className="bg-gray-100 text-gray-800 py-2 px-3 rounded-lg text-base font-semibold">
                   {childProfile.name || 'Não informado'}
                 </div>
               </div>
               <div>
-                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 4px 0' }}>Username</p>
-                <div style={{
-                  background: '#eff6ff',
-                  color: '#1d4ed8',
-                  padding: '8px 12px',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  border: '1px solid #dbeafe'
-                }}>
+                <p className="text-sm text-gray-500 mb-1">Username</p>
+                <div className="bg-blue-50 text-blue-700 py-2 px-3 rounded-lg text-base font-semibold border border-blue-200">
                   {childProfile.username}
                 </div>
               </div>
@@ -470,62 +334,28 @@ export default function AutorizarCrianca() {
         )}
 
         {/* Formulário Principal */}
-        <div style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '32px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            marginBottom: '8px'
-          }}>
-            <FileText size={20} color="#3b82f6" />
-            <h2 style={{
-              fontSize: '24px',
-              fontWeight: 'bold',
-              color: '#1f2937',
-              margin: 0
-            }}>
+        <div className="bg-white rounded-2xl p-8 shadow-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <FileText size={20} className="text-blue-500" />
+            <h2 className="text-2xl font-bold text-gray-800 m-0">
               Dados do Responsável Legal
             </h2>
           </div>
-          <p style={{
-            color: '#6b7280',
-            marginBottom: '24px',
-            fontSize: '16px'
-          }}>
+          <p className="text-gray-500 mb-6 text-base">
             Preencha todos os campos obrigatórios para autorizar a criação da conta
           </p>
 
           {error && (
-            <div style={{
-              background: '#fef2f2',
-              border: '1px solid #fca5a5',
-              borderRadius: '8px',
-              padding: '16px',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <AlertCircle size={20} color="#ef4444" />
-              <p style={{ color: '#dc2626', margin: 0, fontSize: '16px' }}>{error}</p>
+            <div className="bg-red-50 border border-red-300 rounded-lg p-4 mb-6 flex items-center gap-2">
+              <AlertCircle size={20} className="text-red-500" />
+              <p className="text-red-600 m-0 text-base">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* Nome do Responsável */}
             <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#1f2937',
-                marginBottom: '8px'
-              }}>
+              <label className="block text-base font-semibold text-gray-800 mb-2">
                 Nome Completo do Responsável *
               </label>
               <input
@@ -534,33 +364,14 @@ export default function AutorizarCrianca() {
                 value={formData.guardianName}
                 onChange={handleInputChange}
                 placeholder="Digite o nome completo"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  color: '#1f2937',
-                  background: 'white',
-                  outline: 'none',
-                  transition: 'border-color 0.2s',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                className="w-full py-3 px-4 border-2 border-gray-300 rounded-lg text-base text-gray-800 bg-white outline-none transition-colors focus:border-blue-500"
                 required
               />
             </div>
 
             {/* Email do Responsável */}
             <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#1f2937',
-                marginBottom: '8px'
-              }}>
+              <label className="block text-base font-semibold text-gray-800 mb-2">
                 Email do Responsável *
               </label>
               <input
@@ -569,60 +380,24 @@ export default function AutorizarCrianca() {
                 value={formData.guardianEmail}
                 onChange={handleInputChange}
                 placeholder="exemplo@email.com"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  color: '#1f2937',
-                  background: 'white',
-                  outline: 'none',
-                  transition: 'border-color 0.2s',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                className="w-full py-3 px-4 border-2 border-gray-300 rounded-lg text-base text-gray-800 bg-white outline-none transition-colors focus:border-blue-500"
                 required
               />
             </div>
 
             {/* Aviso de Segurança */}
-            <div style={{
-              background: '#fef3c7',
-              border: '1px solid #fbbf24',
-              borderRadius: '8px',
-              padding: '16px',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '8px'
-            }}>
-              <Shield size={20} color="#d97706" style={{ marginTop: '2px', flexShrink: 0 }} />
-              <p style={{
-                color: '#92400e',
-                margin: 0,
-                fontSize: '14px',
-                lineHeight: '1.5'
-              }}>
+            <div className="bg-yellow-50 border border-yellow-400 rounded-lg p-4 flex items-start gap-2">
+              <Shield size={20} className="text-yellow-600 mt-0.5 flex-shrink-0" />
+              <p className="text-yellow-800 m-0 text-sm leading-6">
                 <strong>Informação de Segurança:</strong> Precisamos da sua morada por motivos de segurança. 
                 Esta só será partilhada com as autoridades ou profissionais competentes em situações de risco ou perigo iminente.
               </p>
             </div>
 
             {/* Morada */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '16px'
-            }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label style={{
-                  display: 'block',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: '#1f2937',
-                  marginBottom: '8px'
-                }}>
+                <label className="block text-base font-semibold text-gray-800 mb-2">
                   Morada Completa *
                 </label>
                 <input
@@ -631,31 +406,12 @@ export default function AutorizarCrianca() {
                   value={formData.guardianAddress}
                   onChange={handleInputChange}
                   placeholder="Rua, número, bairro, cidade"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    color: '#1f2937',
-                    background: 'white',
-                    outline: 'none',
-                    transition: 'border-color 0.2s',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                  className="w-full py-3 px-4 border-2 border-gray-300 rounded-lg text-base text-gray-800 bg-white outline-none transition-colors focus:border-blue-500"
                   required
                 />
               </div>
               <div>
-                <label style={{
-                  display: 'block',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: '#1f2937',
-                  marginBottom: '8px'
-                }}>
+                <label className="block text-base font-semibold text-gray-800 mb-2">
                   Código Postal *
                 </label>
                 <input
@@ -664,137 +420,63 @@ export default function AutorizarCrianca() {
                   value={formData.guardianPostalCode}
                   onChange={handleInputChange}
                   placeholder="0000-000"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    color: '#1f2937',
-                    background: 'white',
-                    outline: 'none',
-                    transition: 'border-color 0.2s',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                  className="w-full py-3 px-4 border-2 border-gray-300 rounded-lg text-base text-gray-800 bg-white outline-none transition-colors focus:border-blue-500"
                   required
                 />
               </div>
             </div>
 
-            <div style={{ height: '1px', background: '#e5e7eb', margin: '16px 0' }}></div>
+            <div className="h-px bg-gray-300 my-4"></div>
 
             {/* Checkboxes */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="termsOfUse"
                   checked={formData.termsOfUse}
                   onChange={(e) => handleCheckboxChange('termsOfUse', e.target.checked)}
-                  style={{
-                    width: '18px',
-                    height: '18px',
-                    marginTop: '2px',
-                    accentColor: '#3b82f6'
-                  }}
+                  className="w-5 h-5 mt-0.5 accent-blue-500"
                 />
-                <label htmlFor="termsOfUse" style={{
-                  fontSize: '14px',
-                  lineHeight: '1.5',
-                  color: '#1f2937'
-                }}>
+                <label htmlFor="termsOfUse" className="text-sm leading-6 text-gray-800">
                   <strong>Aceito os termos de responsabilidade</strong> e confirmo que sou o responsável legal por esta criança, autorizando a criação da sua conta na plataforma.
                 </label>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div className="flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="gdprConsentDeclaration"
                   checked={formData.gdprConsentDeclaration}
                   onChange={(e) => handleCheckboxChange('gdprConsentDeclaration', e.target.checked)}
-                  style={{
-                    width: '18px',
-                    height: '18px',
-                    marginTop: '2px',
-                    accentColor: '#3b82f6'
-                  }}
+                  className="w-5 h-5 mt-0.5 accent-blue-500"
                 />
-                <label htmlFor="gdprConsentDeclaration" style={{
-                  fontSize: '14px',
-                  lineHeight: '1.5',
-                  color: '#1f2937'
-                }}>
+                <label htmlFor="gdprConsentDeclaration" className="text-sm leading-6 text-gray-800">
                   <strong>Declaro consentimento RGPD</strong> com o tratamento de dados pessoais de acordo com o Regulamento Geral sobre a Proteção de Dados para os fins da criação e gestão da conta da criança.
                 </label>
               </div>
             </div>
 
-            <p style={{
-              fontSize: '12px',
-              color: '#6b7280',
-              textAlign: 'center',
-              margin: '16px 0 0 0'
-            }}>
+            <p className="text-xs text-gray-500 text-center mt-4 mb-0">
               * Todos os campos são obrigatórios
             </p>
           </form>
         </div>
 
         {/* Botão de Autorizar */}
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className="flex justify-center">
           <button
             onClick={handleSubmit}
             disabled={submitting || !isFormComplete()}
-            style={{
-              width: '100%',
-              maxWidth: '500px',
-              padding: '16px 24px',
-              fontSize: '18px',
-              fontWeight: '700',
-              borderRadius: '12px',
-              border: 'none',
-              cursor: isFormComplete() && !submitting ? 'pointer' : 'not-allowed',
-              transition: 'all 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              background: isFormComplete() && !submitting 
-                ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' 
-                : '#e5e7eb',
-              color: isFormComplete() && !submitting ? 'white' : '#9ca3af',
-              boxShadow: isFormComplete() && !submitting 
-                ? '0 8px 20px rgba(59, 130, 246, 0.3)' 
-                : 'none'
-            }}
-                         onMouseEnter={(e) => {
-               if (isFormComplete() && !submitting) {
-                 const target = e.target as HTMLButtonElement
-                 target.style.transform = 'translateY(-2px)'
-                 target.style.boxShadow = '0 12px 30px rgba(59, 130, 246, 0.4)'
-               }
-             }}
-             onMouseLeave={(e) => {
-               if (isFormComplete() && !submitting) {
-                 const target = e.target as HTMLButtonElement
-                 target.style.transform = 'translateY(0)'
-                 target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.3)'
-               }
-             }}
+            className={`w-full max-w-lg py-4 px-6 text-lg font-bold rounded-xl border-none transition-all duration-300 flex items-center justify-center gap-2 ${
+              isFormComplete() && !submitting 
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:from-blue-600 hover:to-blue-700' 
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
           >
             {submitting ? (
               <>
-                <div style={{
-                  width: '20px',
-                  height: '20px',
-                  border: '2px solid rgba(255,255,255,0.3)',
-                  borderTop: '2px solid white',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite'
-                }}></div>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 <span>Processando...</span>
               </>
             ) : isFormComplete() ? (
@@ -811,13 +493,6 @@ export default function AutorizarCrianca() {
           </button>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   )
 } 
