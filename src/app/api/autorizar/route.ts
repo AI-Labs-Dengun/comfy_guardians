@@ -102,8 +102,82 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Verificar se já existe um responsável com este email
     console.log('🔍 Verificando se já existe responsável para este email:', guardianEmail)
-    // A verificação de responsável existente será feita pela função save_guardian_data
+    const { data: existingGuardian, error: guardianCheckError } = await supabase
+      .from('children_guardians')
+      .select('id, guardian_email, child_name')
+      .eq('guardian_email', guardianEmail)
+      .single()
+
+    if (guardianCheckError && guardianCheckError.code !== 'PGRST116') {
+      console.error('❌ Erro ao verificar responsável existente:', guardianCheckError)
+      return NextResponse.json(
+        { error: 'Erro ao verificar dados do responsável.' },
+        { status: 500 }
+      )
+    }
+
+    if (existingGuardian) {
+      console.log('❌ Responsável já existe:', existingGuardian)
+      return NextResponse.json(
+        { error: `Já existe um responsável registrado com este email para a criança "${existingGuardian.child_name}".` },
+        { status: 409 }
+      )
+    }
+
+    // Preparar dados para salvamento
+    const guardianData = {
+      child_name: childProfile.name,
+      guardian_name: guardianName,
+      guardian_email: guardianEmail,
+      guardian_address: guardianAddress,
+      guardian_postal_code: guardianPostalCode,
+      terms_of_use: termsOfUse,
+      gdpr_consent_declaration: gdprConsentDeclaration
+    }
+
+    console.log('📝 Dados preparados para salvamento:', JSON.stringify(guardianData, null, 2))
+
+    // Salvar dados do responsável ANTES de autorizar a conta
+    console.log('💾 Salvando dados do responsável...')
+    const { data: guardianInsertResult, error: guardianInsertError } = await supabase
+      .from('children_guardians')
+      .insert(guardianData)
+      .select('id, child_name, guardian_name, guardian_email')
+      .single()
+
+    if (guardianInsertError) {
+      console.error('❌ Erro ao salvar dados do responsável:', guardianInsertError)
+      console.error('❌ Código do erro:', guardianInsertError.code)
+      console.error('❌ Mensagem do erro:', guardianInsertError.message)
+      console.error('❌ Detalhes do erro:', guardianInsertError.details)
+      
+      // Tentar função RPC como fallback
+      console.log('🔧 Tentando função RPC como fallback...')
+      const { data: guardianRpcResult, error: guardianRpcError } = await supabase
+        .rpc('save_guardian_data', {
+          p_child_name: childProfile.name,
+          p_guardian_name: guardianName,
+          p_guardian_email: guardianEmail,
+          p_guardian_address: guardianAddress,
+          p_guardian_postal_code: guardianPostalCode,
+          p_terms_of_use: termsOfUse,
+          p_gdpr_consent: gdprConsentDeclaration
+        })
+
+      if (guardianRpcError || !guardianRpcResult?.success) {
+        console.error('❌ Erro na função RPC:', guardianRpcError || guardianRpcResult)
+        return NextResponse.json(
+          { error: 'Erro ao salvar dados do responsável. Tente novamente.' },
+          { status: 500 }
+        )
+      }
+
+      console.log('✅ Dados salvos via função RPC:', guardianRpcResult)
+    } else {
+      console.log('✅ Dados do responsável salvos com sucesso:', guardianInsertResult)
+    }
 
     console.log('🔧 Chamando função authorize_account...')
     // Usar a função nativa do Supabase para autorizar a conta
@@ -131,63 +205,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('✅ Conta autorizada com sucesso, salvando dados do responsável...')
-
-    // Salvar dados do responsável usando a função RPC
-    console.log('🔧 Salvando dados do responsável via função RPC...')
-    const { data: guardianResult, error: guardianError } = await supabase
-      .rpc('save_guardian_data', {
-        p_child_name: childProfile.name,
-        p_guardian_name: guardianName,
-        p_guardian_email: guardianEmail,
-        p_guardian_address: guardianAddress,
-        p_guardian_postal_code: guardianPostalCode,
-        p_terms_of_use: termsOfUse,
-        p_gdpr_consent: gdprConsentDeclaration
-      })
-
-    if (guardianError) {
-      console.error('❌ Erro ao salvar dados do responsável:', guardianError)
-      console.warn('⚠️ Aviso: Não foi possível salvar dados adicionais do responsável, mas a autorização foi processada com sucesso')
-      
-      // Tentar inserção direta como fallback
-      console.log('🔧 Tentando inserção direta como fallback...')
-      try {
-        const guardianData = {
-          child_name: childProfile.name,
-          guardian_name: guardianName,
-          guardian_email: guardianEmail,
-          guardian_address: guardianAddress,
-          guardian_postal_code: guardianPostalCode,
-          terms_of_use: termsOfUse,
-          gdpr_consent_declaration: gdprConsentDeclaration
-        }
-
-        const { data: insertResult, error: insertError } = await supabase
-          .from('children_guardians')
-          .insert(guardianData)
-          .select()
-
-        if (insertError) {
-          console.error('❌ Erro na inserção direta:', insertError)
-          console.warn('⚠️ Inserção direta também falhou, mas a autorização principal foi bem-sucedida')
-        } else {
-          console.log('✅ Dados salvos via inserção direta:', insertResult)
-        }
-      } catch (insertException) {
-        console.error('❌ Exceção na inserção direta:', insertException)
-        console.warn('⚠️ Inserção direta falhou, mas a autorização principal foi bem-sucedida')
-      }
-    } else {
-      console.log('✅ Dados do responsável salvos com sucesso:', guardianResult)
-    }
+    console.log('✅ Processo completo: dados salvos e conta autorizada com sucesso!')
 
     return NextResponse.json(
       { 
         success: true, 
-        message: 'Autorização processada com sucesso.',
+        message: 'Autorização processada com sucesso. Dados do responsável salvos.',
         childName: childProfile.name,
-        username: childProfile.username
+        username: childProfile.username,
+        guardianSaved: true
       },
       { status: 200 }
     )
