@@ -21,12 +21,13 @@ interface ChatWithDetails extends Chat {
   }
   unreadCount: number
   participantCount: number
+  messageCount?: number
 }
 
 export default function ChatTestPage() {
   const [currentChat, setCurrentChat] = useState<ChatWithDetails | null>(null)
   const [chats, setChats] = useState<ChatWithDetails[]>([])
-  const [messages, setMessages] = useState<(Message & { sender?: any })[]>([])
+  const [messages, setMessages] = useState<(Message & { sender?: Profile })[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingChats, setIsLoadingChats] = useState(true)
   const [currentUserId, setCurrentUserId] = useState('')
@@ -41,14 +42,57 @@ export default function ChatTestPage() {
   const [newMessageNotification, setNewMessageNotification] = useState<{chatId: string, message: string} | null>(null)
   const [highlightedChats, setHighlightedChats] = useState<Set<string>>(new Set())
 
-  // Buscar usuários disponíveis
+  // Mapa para anonimização de pacientes (user_id -> User123)
+  const [anonymousUserMap, setAnonymousUserMap] = useState<Map<string, string>>(new Map())
+  const [anonymousUserCounter, setAnonymousUserCounter] = useState(1)
+
+  // Função para gerar ID anônimo para pacientes
+  const getAnonymousUserId = (userId: string): string => {
+    if (!anonymousUserMap.has(userId)) {
+      const anonymousId = `User${anonymousUserCounter}`
+      setAnonymousUserMap(prev => new Map(prev.set(userId, anonymousId)))
+      setAnonymousUserCounter(prev => prev + 1)
+      return anonymousId
+    }
+    return anonymousUserMap.get(userId)!
+  }
+
+  // Função para anonimizar nome de paciente
+  const anonymizePatientName = (profile: Profile | undefined, userId: string): string => {
+    if (!profile) return getAnonymousUserId(userId)
+    
+    // Se for um psicólogo, mostrar nome real
+    if (profile.user_role === 'psicologo') {
+      return profile.name || profile.username || 'Psicólogo'
+    }
+    
+    // Se for paciente (app), anonimizar
+    if (profile.user_role === 'app') {
+      return getAnonymousUserId(userId)
+    }
+    
+    // Para outros roles, usar ID anônimo
+    return getAnonymousUserId(userId)
+  }
+
+  // Buscar usuários disponíveis - APENAS PSICÓLOGOS
   const loadAvailableUsers = async () => {
     try {
       const response = await fetch('/api/chat/list', { method: 'POST' })
       const result = await response.json()
       
       if (response.ok) {
-        setAvailableUsers(result.users.all || [])
+        // FILTRAR APENAS PSICÓLOGOS
+        const psychologists = (result.users.all || []).filter((user: Profile) => 
+          user.user_role === 'psicologo' && user.authorized === true
+        )
+        
+        console.log(`🩺 Psicólogos disponíveis: ${psychologists.length}`)
+        psychologists.forEach((psi: Profile) => {
+          console.log(`  - ${psi.name} (@${psi.username}) - ${psi.user_role}`)
+        })
+        
+        setAvailableUsers(psychologists)
       } else {
         console.error('Erro ao buscar usuários:', result.error)
       }
@@ -57,12 +101,25 @@ export default function ChatTestPage() {
     }
   }
 
-  // Configurar usuário e carregar chats
+  // Configurar usuário e carregar chats - COM VALIDAÇÃO DE PSICÓLOGO
   const setupUser = async () => {
     if (!selectedUserId) return
     
+    // VALIDAÇÃO EXTRA: Verificar se o usuário selecionado é realmente um psicólogo
+    const selectedUser = availableUsers.find(user => user.id === selectedUserId)
+    if (!selectedUser || selectedUser.user_role !== 'psicologo') {
+      alert('❌ Erro: Apenas psicólogos autorizados podem acessar o sistema de chat.')
+      return
+    }
+    
+    if (!selectedUser.authorized) {
+      alert('❌ Erro: Sua conta ainda não foi autorizada. Aguarde a aprovação.')
+      return
+    }
+    
     setIsLoading(true)
     try {
+      console.log(`🩺 Psicólogo ${selectedUser.name} acessando o sistema...`)
       setCurrentUserId(selectedUserId)
       setIsSetupComplete(true)
       
@@ -90,10 +147,13 @@ export default function ChatTestPage() {
         
         if (result.chats && result.chats.length > 0) {
           console.log('📋 Chats carregados:')
-          result.chats.forEach((chat: any, index: number) => {
+          result.chats.forEach((chat: ChatWithDetails, index: number) => {
+            const patientName = anonymizePatientName(chat.user, chat.user_id)
+            const psychologistName = chat.psychologist?.name || chat.psychologist?.username || 'Psicólogo'
+            
             console.log(`  ${index + 1}. ID: ${chat.id}`)
             console.log(`     Título: ${chat.title || 'Sem título'}`)
-            console.log(`     Participantes: ${chat.user?.name || chat.user_id} + ${chat.psychologist?.name || chat.psychologist_id || 'nenhum'}`)
+            console.log(`     Participantes: ${patientName} + ${psychologistName}`)
             console.log(`     Mensagens: ${chat.messageCount || 0}`)
             console.log(`     Última atividade: ${chat.lastMessage ? new Date(chat.lastMessage.created_at).toLocaleString() : 'Nunca'}`)
           })
@@ -241,7 +301,7 @@ export default function ChatTestPage() {
           const newMessage = {
             ...payload.new,
             sender
-          } as Message & { sender?: any }
+          } as Message & { sender?: Profile }
 
           // Verificar se a mensagem já existe para evitar duplicação
           setMessages(prev => {
@@ -296,7 +356,7 @@ export default function ChatTestPage() {
           // Buscar informações do remetente para notificação
           const { data: sender } = await supabase
             .from('profiles')
-            .select('id, name, username, avatar_path')
+            .select('*')
             .eq('id', payload.new.sender_id)
             .single()
 
@@ -309,7 +369,8 @@ export default function ChatTestPage() {
 
           // Se a mensagem NÃO é do usuário atual (mostrar notificação para mensagens de outros)
           if (payload.new.sender_id !== currentUserId) {
-            const senderName = sender?.name || sender?.username || 'Usuário'
+            // Anonimizar nome do remetente se for paciente
+            const senderName = anonymizePatientName(sender || undefined, payload.new.sender_id)
             const chatTitle = chatData?.title || `Chat ${payload.new.chat_id.substring(0, 8)}`
             console.log(`📢 Nova mensagem de ${senderName} no chat "${chatTitle}":`, payload.new.content)
             
@@ -360,10 +421,11 @@ export default function ChatTestPage() {
           
           // MODO ADMIN: Detectar QUALQUER mudança em chats
           const chat = payload.new || payload.old
-          if (chat) {
+          if (chat && 'id' in chat) {
             console.log('🔄 MODO ADMIN: Nova mudança em chat detectada, atualizando lista completa...')
             console.log(`   Chat ID: ${chat.id}`)
-            console.log(`   Participantes: ${chat.user_id} + ${chat.psychologist_id || 'nenhum'}`)
+            const chatData = chat as Chat
+            console.log(`   Participantes: ${chatData.user_id} + ${chatData.psychologist_id || 'nenhum'}`)
             await loadChats()
           }
         }
@@ -388,6 +450,9 @@ export default function ChatTestPage() {
     setCurrentUserId('')
     setSelectedUserId('')
     setConnectionStatus('disconnected')
+    // Resetar mapa de anonimização
+    setAnonymousUserMap(new Map())
+    setAnonymousUserCounter(1)
   }
 
   const getConnectionStatusColor = () => {
@@ -411,15 +476,23 @@ export default function ChatTestPage() {
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>🔥 Painel Administrativo - Chat System</CardTitle>
+            <CardTitle>🩺 Sistema de Chat - Psicólogos</CardTitle>
             <CardDescription>
-              Selecione sua identidade como moderador. Você poderá visualizar e responder a <strong>TODOS os chats</strong> criados pela aplicação Flutter, independentemente dos participantes.
+              <div className="space-y-2">
+                <p>Sistema exclusivo para <strong>psicólogos autorizados</strong>.</p>
+                <p className="text-sm text-blue-600">
+                  ✅ Acesso total a todos os chats criados pela aplicação Flutter
+                </p>
+                <p className="text-xs text-gray-500">
+                  🔒 Apenas usuários com perfil &quot;psicólogos&quot; e conta autorizada podem acessar
+                </p>
+              </div>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">
-                Selecione seu usuário:
+                Selecione seu perfil de psicólogo:
               </label>
               {availableUsers.length > 0 ? (
                 <select
@@ -427,28 +500,39 @@ export default function ChatTestPage() {
                   onChange={(e) => setSelectedUserId(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">-- Selecione um usuário --</option>
+                  <option value="">-- Selecione seu perfil --</option>
                   {availableUsers.map((user) => (
                     <option key={user.id} value={user.id}>
-                      {user.name} (@{user.username}) - {user.user_role}
+                      🩺 {user.name} (@{user.username})
                     </option>
                   ))}
                 </select>
               ) : (
                 <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md">
                   <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-gray-600">Carregando usuários...</span>
+                  <span className="text-sm text-gray-600">Carregando psicólogos...</span>
+                </div>
+              )}
+              
+              {availableUsers.length === 0 && (
+                <div className="mt-2 p-3 bg-yellow-50 rounded-md border border-yellow-200">
+                  <p className="text-sm text-yellow-800">
+                    ⚠️ <strong>Nenhum psicólogo autorizado encontrado.</strong>
+                  </p>
+                  <p className="text-xs text-yellow-600 mt-1">
+                    Certifique-se de que existem usuários com user_role &quot;psicologo&quot; e conta autorizada.
+                  </p>
                 </div>
               )}
             </div>
             
             {selectedUserId && (
-              <div className="p-3 bg-red-50 rounded-md border border-red-200">
-                <p className="text-sm text-red-800">
-                  <strong>🛡️ Moderador selecionado:</strong> {availableUsers.find(u => u.id === selectedUserId)?.name}
+              <div className="p-3 bg-green-50 rounded-md border border-green-200">
+                <p className="text-sm text-green-800">
+                  <strong>🩺 Psicólogo selecionado:</strong> {availableUsers.find(u => u.id === selectedUserId)?.name}
                 </p>
-                <p className="text-xs text-red-600 mt-1">
-                  ⚡ Modo Admin: Acesso completo a TODOS os chats do sistema Flutter
+                <p className="text-xs text-green-600 mt-1">
+                  ✅ Autorizado para moderar TODOS os chats do sistema
                 </p>
               </div>
             )}
@@ -458,7 +542,7 @@ export default function ChatTestPage() {
               disabled={isLoading || !selectedUserId}
               className="w-full"
             >
-              {isLoading ? 'Entrando...' : 'Entrar no Sistema'}
+              {isLoading ? 'Entrando...' : 'Acessar Sistema'}
             </Button>
           </CardContent>
         </Card>
@@ -493,11 +577,11 @@ export default function ChatTestPage() {
       <div className="bg-white border-b px-4 py-3">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold">🔥 Chat System - Painel Administrativo</h1>
+            <h1 className="text-lg font-semibold">🩺 Sistema de Chat - Psicólogos</h1>
             <p className="text-sm text-gray-600">
               <span className="inline-flex items-center gap-1">
-                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                <strong>MODO ADMIN:</strong> Visualizando TODOS os chats do sistema
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <strong>PSICÓLOGO AUTORIZADO:</strong> Acesso completo ao sistema
               </span>
               {currentChat && ` • Chat ativo: ${currentChat.title || 'Sem título'}`}
             </p>
@@ -510,7 +594,7 @@ export default function ChatTestPage() {
               </span>
             </div>
             <Button variant="outline" size="sm" onClick={resetSetup}>
-              Trocar Usuário
+              Trocar Psicólogo
             </Button>
           </div>
         </div>
@@ -527,6 +611,7 @@ export default function ChatTestPage() {
           onRefresh={loadChats}
           isLoading={isLoadingChats}
           highlightedChats={highlightedChats}
+          anonymizePatientName={anonymizePatientName}
         />
 
         {/* Chat Area */}
@@ -555,6 +640,7 @@ export default function ChatTestPage() {
                 messages={messages}
                 currentUserId={currentUserId}
                 isLoading={isLoading}
+                anonymizePatientName={anonymizePatientName}
               />
 
               {/* Input */}
@@ -573,11 +659,11 @@ export default function ChatTestPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">Selecione um chat para moderar</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">Selecione um chat para atender</h3>
                 <p className="text-gray-500">
                   {chats.length === 0 
                     ? '🔍 Aguardando criação de chats pelo Flutter...' 
-                    : '👈 Escolha qualquer chat da lista para visualizar e responder mensagens'}
+                    : '👈 Escolha qualquer chat da lista para visualizar e responder como psicólogo'}
                 </p>
                 {chats.length === 0 && (
                   <p className="text-xs text-gray-400 mt-2">
