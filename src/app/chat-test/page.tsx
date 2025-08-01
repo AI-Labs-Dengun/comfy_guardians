@@ -590,35 +590,7 @@ export default function ChatTestPage() {
         </div>
       </div>
 
-      {/* Status Panel */}
-      <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm border-l-4 border-red-500">
-        <h3 className="font-medium mb-2 flex items-center gap-2">
-          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-          Status Administrativo
-        </h3>
-        <div className="text-sm space-y-1">
-          <p><strong>👤 Moderador:</strong> {availableUsers.find(u => u.id === currentUserId)?.username}</p>
-          <p><strong>📋 Total de chats:</strong> {chats.length}</p>
-          <p><strong>💬 Chat ativo:</strong> {currentChat ? 'Sim' : 'Nenhum'}</p>
-          <p><strong>📨 Mensagens no chat:</strong> {messages.length}</p>
-          {highlightedChats.size > 0 && (
-            <p className="text-green-600"><strong>🔥 Chats com atividade:</strong> {highlightedChats.size}</p>
-          )}
-          <div className="pt-2 border-t">
-            <div className={`flex items-center gap-2 ${connectionStatus === 'connected' ? 'text-green-600' : 'text-red-600'}`}>
-              <div className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-xs font-medium">
-                {connectionStatus === 'connected' ? '🌐 MONITORANDO TODO O SISTEMA' : '❌ Desconectado'}
-              </span>
-            </div>
-            {connectionStatus === 'connected' && (
-              <p className="text-xs text-gray-500 mt-1">
-                ✅ Detectando automaticamente chats criados pelo Flutter
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+
     </div>
   )
 } 
