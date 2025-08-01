@@ -27,6 +27,7 @@ interface ChatListProps {
   onRefresh: () => void
   isLoading?: boolean
   highlightedChats?: Set<string>
+  anonymizePatientName?: (profile: Profile | undefined, userId: string) => string
 }
 
 export function ChatList({ 
@@ -36,7 +37,8 @@ export function ChatList({
   onChatSelect, 
   onRefresh,
   isLoading = false,
-  highlightedChats = new Set()
+  highlightedChats = new Set(),
+  anonymizePatientName
 }: ChatListProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -71,6 +73,12 @@ export function ChatList({
 
     // Mostrar o nome do outro participante
     const otherParticipant = chat.user_id === currentUserId ? chat.psychologist : chat.user
+    
+    // Se temos função de anonimização, usar ela
+    if (anonymizePatientName && otherParticipant) {
+      return anonymizePatientName(otherParticipant, otherParticipant.id)
+    }
+    
     return otherParticipant?.name || otherParticipant?.username || 'Chat sem nome'
   }
 

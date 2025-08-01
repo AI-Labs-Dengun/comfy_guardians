@@ -1,16 +1,17 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Message } from '@/lib/supabase'
+import { Message, Profile } from '@/lib/supabase'
 import { MessageBubble } from './MessageBubble'
 
 interface MessageListProps {
-  messages: (Message & { sender?: { id: string; name: string; username: string; avatar_path: string } })[]
+  messages: (Message & { sender?: Profile })[]
   currentUserId: string
   isLoading?: boolean
+  anonymizePatientName?: (profile: Profile | undefined, userId: string) => string
 }
 
-export function MessageList({ messages, currentUserId, isLoading = false }: MessageListProps) {
+export function MessageList({ messages, currentUserId, isLoading = false, anonymizePatientName }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -67,6 +68,7 @@ export function MessageList({ messages, currentUserId, isLoading = false }: Mess
               message={message}
               isOwn={isOwn}
               showSender={showSender}
+              anonymizePatientName={anonymizePatientName}
             />
           )
         })}

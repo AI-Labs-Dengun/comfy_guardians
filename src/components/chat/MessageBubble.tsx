@@ -1,13 +1,14 @@
-import { Message } from '@/lib/supabase'
+import { Message, Profile } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 
 interface MessageBubbleProps {
-  message: Message & { sender?: { id: string; name: string; username: string; avatar_path: string } }
+  message: Message & { sender?: Profile }
   isOwn: boolean
   showSender?: boolean
+  anonymizePatientName?: (profile: Profile | undefined, userId: string) => string
 }
 
-export function MessageBubble({ message, isOwn, showSender = true }: MessageBubbleProps) {
+export function MessageBubble({ message, isOwn, showSender = true, anonymizePatientName }: MessageBubbleProps) {
   const formatTime = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleTimeString('pt-BR', { 
@@ -31,7 +32,7 @@ export function MessageBubble({ message, isOwn, showSender = true }: MessageBubb
         {/* Nome do remetente (apenas para mensagens de outros) */}
         {!isOwn && showSender && message.sender && (
           <div className="text-xs font-medium text-gray-600 mb-1">
-            {message.sender.name}
+            {anonymizePatientName ? anonymizePatientName(message.sender, message.sender_id) : message.sender.name}
           </div>
         )}
         
