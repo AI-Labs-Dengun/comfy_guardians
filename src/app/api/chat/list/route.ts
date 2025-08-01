@@ -160,13 +160,13 @@ export async function POST(request: NextRequest) {
 
     // Separar por roles
     const users = profiles?.filter(p => p.user_role === 'app') || []
-    const psychologists = profiles?.filter(p => p.user_role === 'psicologos') || []
+    const psychologists = profiles?.filter(p => p.user_role === 'psicologo') || []
     const admins = profiles?.filter(p => p.user_role === 'cms') || []
 
     return NextResponse.json({ 
       users: {
         app: users,
-        psicologos: psychologists,
+        psicologo: psychologists,
         cms: admins,
         all: profiles || []
       }
