@@ -23,7 +23,7 @@ export interface Profile {
   postal_code?: string
   guardian_email: string
   authorized?: boolean | null // NULL = pendente, TRUE = autorizado, FALSE = rejeitado
-  user_role: 'app' | 'cms' | 'psicologos'
+  user_role: 'app' | 'cms' | 'psicologo'
   approval_token: string
   approval_email_sent: boolean
   approval_email_sent_at?: string
